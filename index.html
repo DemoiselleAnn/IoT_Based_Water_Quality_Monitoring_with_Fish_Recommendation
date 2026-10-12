@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f4f9fb">
+  <title>AquaSense | Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Main navigation">
+      <a class="brand" href="#dashboard" aria-label="AquaSense dashboard">
+        <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none"><path d="M16 4.2C12.2 9.4 8.7 13.4 8.7 19a7.3 7.3 0 0 0 14.6 0c0-5.6-3.5-9.6-7.3-14.8Z" stroke="currentColor" stroke-width="2.2"/><path d="M20.3 18.2c-.3 2-1.5 3.2-3.2 3.7" stroke="currentColor" stroke-linecap="round" stroke-width="1.8"/><circle cx="24.5" cy="7" r="1.1" fill="currentColor"/><circle cx="26.8" cy="11" r=".8" fill="currentColor"/></svg></span>
+        <span class="brand-copy"><span class="brand-name">AquaSense</span><span class="brand-tag">SMART AQUARIUM</span></span>
+      </a>
+      <div class="nav-label">WORKSPACE</div>
+      <nav class="nav-list" aria-label="Workspace">
+        <a class="nav-link active" href="#dashboard" aria-label="Dashboard" title="Dashboard" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.3"/><rect x="14" y="3" width="7" height="7" rx="1.3"/><rect x="3" y="14" width="7" height="7" rx="1.3"/><rect x="14" y="14" width="7" height="7" rx="1.3"/></svg><span>Dashboard</span></a>
+        <a class="nav-link" href="#monitoring" data-page="Monitoring" aria-label="Monitoring" title="Monitoring"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5.5A1.5 1.5 0 0 1 4.5 4h15A1.5 1.5 0 0 1 21 5.5v13a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 18.5z"/><path d="M4 15h4l2-7 3.5 9 2.1-5H20"/></svg><span>Monitoring</span></a>
+        <a class="nav-link" href="#fish-recommendations" aria-label="Fish Recommendation" title="Fish Recommendation"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12s3.2-5.5 9-5.5 9 5.5 9 5.5-3.2 5.5-9 5.5S3 12 3 12Z"/><path d="m3 12-2.2-3v6L3 12Zm9-1.5h.01"/><circle cx="16.5" cy="10" r=".7" fill="currentColor"/></svg><span>Fish Recommendation</span></a>
+        <a class="nav-link" href="#history" data-page="History" aria-label="History" title="History"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3.1 11a9 9 0 1 1 .5 5.2"/><path d="M3 4v6h6M12 7v5l3 2"/></svg><span>History</span></a>
+        <a class="nav-link" href="#alerts" data-page="Alerts" aria-label="Alerts" title="Alerts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg><span>Alerts</span><span class="nav-badge" id="alert-count" hidden>0</span></a>
+      </nav>
+      <div class="nav-spacer"></div>
+      <div class="nav-bottom">
+        <a class="nav-link" href="#profile" data-page="Profile" aria-label="Profile" title="Profile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span>Profile</span></a>
+        <a class="nav-link" href="#logout" data-page="Logout" aria-label="Logout" title="Logout"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M10 17l5-5-5-5M15 12H3"/><path d="M12 3h6a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-6"/></svg><span>Logout</span></a>
+      </div>
+      <div class="device-card" aria-live="polite">
+        <span class="device-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.8"><path d="M5 9a11 11 0 0 1 14 0M8 12a6.5 6.5 0 0 1 8 0m-5 3a2 2 0 0 1 2 0"/><circle cx="12" cy="18" r="1" fill="currentColor" stroke="none"/></svg></span>
+        <span class="device-copy"><strong id="device-title">ESP32 disconnected</strong><span id="device-subtitle">No live data</span></span>
+        <span class="connection-dot" id="device-dot" aria-label="Disconnected"></span>
+      </div>
+    </aside>
+
+    <div class="main">
+      <header class="topbar">
+        <div><div class="topbar-title" id="topbar-title">Dashboard</div><div class="topbar-subtitle">Aquarium monitoring system <span class="demo-data-label" id="demo-data-label" hidden>· Mock data</span></div></div>
+        <div class="topbar-actions">
+          <div class="system-pill" id="system-pill" aria-live="polite"><span class="status-dot"></span><span id="system-status">Device Offline</span><span class="sep">•</span><span class="system-live-label" id="system-data-label">No data received</span></div>
+          <button class="icon-button" id="notification-button" type="button" aria-label="Alerts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg><span class="notification-mark" id="notification-mark" hidden></span></button>
+          <span class="top-divider"></span>
+          <button class="profile-button" id="profile-button" type="button" aria-label="Jamie Dela Cruz, Aquarium Owner"><span class="avatar">JD</span><span class="profile-copy"><strong>Jamie Dela Cruz</strong><small>Aquarium Owner</small></span><svg class="profile-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></button>
+        </div>
+      </header>
+
+      <main class="content" id="dashboard">
+        <section class="overview-head" aria-labelledby="greeting">
+          <div><div class="eyebrow">YOUR AQUARIUM</div><h1 id="greeting">Good morning, Jamie.</h1><p class="greeting-copy" id="overview-copy">Waiting for current temperature and turbidity readings.</p></div>
+          <div class="sync-pill" id="sync-pill"><span class="status-dot"></span><span class="live-word" id="sync-state">OFFLINE</span><span class="sync-divider"></span><span id="sync-time">No data received</span></div>
+        </section>
+
+        <section class="sensor-grid" id="monitoring" aria-label="Current sensor readings">
+          <article class="sensor-card temperature-card">
+            <div class="sensor-top"><div><div class="sensor-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"><path d="M14 14.8V5a3 3 0 0 0-6 0v9.8a5 5 0 1 0 6 0Z"/><path d="M11 7v10"/></svg></div><div class="sensor-label">TEMPERATURE</div></div><span class="state-badge" id="temperature-badge">No data</span></div>
+            <div class="reading-row"><span class="reading" id="temperature-reading">—</span><span class="unit">°C</span></div>
+            <div class="sensor-footer"><div><div class="interpretation" id="temperature-interpretation">Waiting for sensor data</div><div class="updated"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span id="temperature-updated">No reading received</span></div></div><svg class="sensor-trend temperature-trend" id="temperature-trend" viewBox="0 0 132 40" aria-label="Recent mock temperature readings"><polyline points=""></polyline></svg></div>
+          </article>
+          <article class="sensor-card turbidity-card">
+            <div class="sensor-top"><div><div class="sensor-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"><path d="M12 3s7 7.2 7 12a7 7 0 0 1-14 0c0-4.8 7-12 7-12Z"/></svg></div><div class="sensor-label">TURBIDITY</div></div><span class="state-badge" id="turbidity-badge">No data</span></div>
+            <div class="reading-row"><span class="reading" id="turbidity-reading">—</span><span class="unit" id="turbidity-unit">sensor units</span></div>
+            <div class="sensor-footer"><div><div class="interpretation" id="turbidity-interpretation">Waiting for sensor data</div><div class="updated"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span id="turbidity-updated">No reading received</span></div></div><svg class="sensor-trend turbidity-trend" id="turbidity-trend" viewBox="0 0 132 40" aria-label="Recent mock turbidity readings"><polyline points=""></polyline></svg><div class="sensor-note" id="turbidity-note">Display unit follows sensor calibration.</div></div>
+          </article>
+        </section>
+
+        <section class="condition-card" id="condition-card" aria-live="polite" aria-label="Overall monitored water condition">
+          <div class="condition-main"><span class="condition-check" id="condition-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg></span><div><div class="condition-label">WATER CONDITION</div><div class="condition-state" id="condition-state">WAITING</div></div></div>
+          <div class="condition-explanation" id="condition-explanation">Waiting for fresh temperature and turbidity readings to assess the configured ranges.</div>
+          <div class="condition-details"><div class="condition-detail"><div class="condition-detail-label">TEMPERATURE</div><div class="condition-detail-value" id="temperature-summary">— Not available</div></div><div class="condition-detail"><div class="condition-detail-label">TURBIDITY</div><div class="condition-detail-value" id="turbidity-summary">— Not available</div></div></div>
+        </section>
+
+        <section class="compatibility" id="fish-compatibility" aria-labelledby="compatibility-title">
+          <div class="section-heading"><div><h2 id="compatibility-title">Fish Compatibility</h2><p>Suitable based on your currently monitored water parameters.</p></div><a class="text-link" href="#fish-recommendations" id="all-recommendations">View all recommendations<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></a></div>
+          <div class="fish-grid">
+            <button class="fish-card" type="button" data-fish="Guppy" aria-label="View Guppy recommendation details"><img src="assets\fish\guppy.jpg" alt="Colorful fish swimming in an aquarium" loading="lazy"><span class="fish-card-content"><span><span class="fish-suitable pending" data-fish-status>Awaiting readings</span><span class="fish-name">Guppy</span></span><span class="fish-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span></span></button>
+            <button class="fish-card" type="button" data-fish="Molly" aria-label="View Molly recommendation details"><img src="assets\fish\molly.jpg" alt="Tropical aquarium fish" loading="lazy"><span class="fish-card-content"><span><span class="fish-suitable pending" data-fish-status>Awaiting readings</span><span class="fish-name">Molly</span></span><span class="fish-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span></span></button>
+            <button class="fish-card" type="button" data-fish="Betta" aria-label="View Betta recommendation details"><img src="assets\fish\betta.jpg   " alt="Betta fish with flowing fins" loading="lazy"><span class="fish-card-content"><span><span class="fish-suitable pending" data-fish-status>Awaiting readings</span><span class="fish-name">Betta</span></span><span class="fish-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span></span></button>
+          </div>
+          <div class="page-footer">Sensor status is based only on temperature and turbidity.</div>
+        </section>
+      </main>
+      <main class="content routed-view" id="monitoring-page" hidden>
+        <section aria-labelledby="live-monitoring-title">
+          <div class="monitoring-heading">
+            <div><h1 id="live-monitoring-title">Live Monitoring</h1><p>Real-time readings from your aquarium sensors.</p></div>
+            <div class="sync-pill" id="monitoring-sync-pill"><span class="status-dot"></span><span class="live-word" id="monitoring-sync-state">OFFLINE</span><span class="sync-divider"></span><span id="monitoring-sync-time">No data received</span></div>
+          </div>
+          <section class="sensor-grid" aria-label="Live temperature and turbidity readings">
+            <article class="sensor-card temperature-card">
+              <div class="sensor-top"><div><div class="sensor-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"><path d="M14 14.8V5a3 3 0 0 0-6 0v9.8a5 5 0 1 0 6 0Z"/><path d="M11 7v10"/></svg></div><div class="sensor-label">TEMPERATURE</div></div><span class="state-badge" id="monitoring-temperature-badge">No Data</span></div>
+              <div class="reading-row"><span class="reading" id="monitoring-temperature-reading">—</span><span class="unit">°C</span></div>
+              <div class="monitoring-range" id="monitoring-temperature-range">Configured range not set</div>
+              <div class="sensor-footer"><div><div class="interpretation" id="monitoring-temperature-interpretation">No Data</div><div class="updated"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span id="monitoring-temperature-updated">No data received</span></div></div><svg class="sensor-trend temperature-trend" id="monitoring-temperature-trend" viewBox="0 0 132 40" aria-label="Recent mock temperature readings"><polyline points=""></polyline></svg></div>
+            </article>
+            <article class="sensor-card turbidity-card">
+              <div class="sensor-top"><div><div class="sensor-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"><path d="M12 3s7 7.2 7 12a7 7 0 0 1-14 0c0-4.8 7-12 7-12Z"/></svg></div><div class="sensor-label">TURBIDITY</div></div><span class="state-badge" id="monitoring-turbidity-badge">No Data</span></div>
+              <div class="reading-row"><span class="reading" id="monitoring-turbidity-reading">—</span><span class="unit" id="monitoring-turbidity-unit">sensor units</span></div>
+              <div class="monitoring-range" id="monitoring-turbidity-range">Configured classification not set</div>
+              <div class="sensor-footer"><div><div class="interpretation" id="monitoring-turbidity-interpretation">No Data</div><div class="updated"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span id="monitoring-turbidity-updated">No data received</span></div></div><svg class="sensor-trend turbidity-trend" id="monitoring-turbidity-trend" viewBox="0 0 132 40" aria-label="Recent mock turbidity readings"><polyline points=""></polyline></svg></div>
+            </article>
+          </section>
+          <section class="monitoring-device-section" aria-labelledby="device-status-heading">
+            <h2 id="device-status-heading">Device Status</h2>
+            <article class="device-status-card">
+              <header class="device-status-head"><span class="device-status-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"><rect x="5" y="2.5" width="14" height="19" rx="3"/><path d="M9 6h6M10 18h4"/></svg></span><div><div class="device-status-title">Aquarium ESP32</div><div class="device-status-subtitle">Main monitoring controller</div></div><span class="state-badge" id="monitoring-device-badge">Offline</span></header>
+              <div class="device-components">
+                <div class="device-component"><span class="component-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M10 6h4M10 18h4"/></svg></span><div><div class="component-name">ESP32</div><div class="component-state offline" id="monitoring-esp-state">Offline</div></div></div>
+                <div class="device-component"><span class="component-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"><path d="M14 14.8V5a3 3 0 0 0-6 0v9.8a5 5 0 1 0 6 0Z"/><path d="M11 7v10"/></svg></span><div><div class="component-name">Temperature Sensor</div><div class="component-state" id="monitoring-temperature-sensor-state">No Data</div></div></div>
+                <div class="device-component"><span class="component-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"><path d="M12 3s7 7.2 7 12a7 7 0 0 1-14 0c0-4.8 7-12 7-12Z"/></svg></span><div><div class="component-name">Turbidity Sensor</div><div class="component-state" id="monitoring-turbidity-sensor-state">No Data</div></div></div>
+              </div>
+              <div class="last-received"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>Last data received:</span><strong id="monitoring-last-received">No data received</strong></div>
+            </article>
+          </section>
+        </section>
+      </main>
+      <main class="content routed-view" id="fish-recommendations-page" hidden>
+        <section aria-labelledby="recommendations-title">
+          <header class="recommendation-page-heading">
+            <h1 id="recommendations-title">Fish Recommendation</h1>
+            <p>Fish compatibility based on the currently monitored aquarium conditions.</p>
+          </header>
+          <section class="current-conditions-card" aria-labelledby="current-conditions-heading">
+            <div class="current-conditions-title"><span class="current-conditions-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"><path d="M3 12s3.2-5.5 9-5.5 9 5.5 9 5.5-3.2 5.5-9 5.5S3 12 3 12Z"/><path d="m3 12-2.2-3v6L3 12Zm9-1.5h.01"/><circle cx="16.5" cy="10" r=".7" fill="currentColor"/></svg></span><span><strong id="current-conditions-heading">Current Conditions</strong><small id="current-conditions-message">Live parameters used for matching</small></span></div>
+            <div class="current-condition-values">
+              <div class="current-condition"><div class="current-condition-label">TEMPERATURE</div><div class="current-condition-value" id="recommendation-temperature-value">—</div><div class="current-condition-note" id="recommendation-temperature-note">No Data</div></div>
+              <div class="current-condition"><div class="current-condition-label">TURBIDITY</div><div class="current-condition-value" id="recommendation-turbidity-value">—</div><div class="current-condition-note" id="recommendation-turbidity-note">No Data</div></div>
+            </div>
+          </section>
+          <div class="recommendation-results">
+            <div class="recommendation-results-head"><div><h2 id="compatible-count">Compatibility results</h2><p id="compatible-subtitle">Suitable based on monitored parameters.</p></div><span class="results-live offline" id="recommendation-live-state">Live data unavailable</span></div>
+            <div class="fish-results-grid" id="compatible-fish-grid"></div>
+            <section class="recommendation-empty" id="recommendation-unavailable" aria-live="polite"><h3>Live readings unavailable</h3><p>Fish compatibility cannot be updated until current sensor data is available.</p><p id="last-recorded-reading" hidden></p></section>
+            <section class="recommendation-empty" id="requirements-unavailable" aria-live="polite"><h3>Compatibility data unavailable</h3><p>Validated fish temperature and turbidity requirements are not configured.</p></section>
+            <section class="recommendation-empty" id="no-compatible-fish" aria-live="polite"><h3>No Compatible Fish Found</h3><p>No fish in the current recommendation database matches both of the monitored water parameters.</p><div class="no-match-issues" id="no-match-issues"></div><p>Improve or stabilize the aquarium conditions and continue monitoring.</p></section>
+          </div>
+          <p class="recommendation-disclaimer">Compatibility recommendations are based only on temperature and turbidity. Other fish care requirements and aquarium conditions should also be considered. Fish requirements shown are prototype placeholders pending validation.</p>
+        </section>
+      </main>
+      <main class="content routed-view" id="history-page" hidden>
+        <section aria-labelledby="history-title">
+          <header class="history-heading">
+            <div><h1 id="history-title">Water Quality History</h1><p>Review recent changes in your aquarium conditions.</p></div>
+            <div class="history-range-control" role="group" aria-label="History time range">
+              <button class="history-range-button active" type="button" data-history-range="today" aria-pressed="true">Today</button>
+              <button class="history-range-button" type="button" data-history-range="7days" aria-pressed="false">7 Days</button>
+              <button class="history-range-button" type="button" data-history-range="30days" aria-pressed="false">30 Days</button>
+            </div>
+          </header>
+          <div class="history-charts" id="history-charts">
+            <article class="history-chart-card">
+              <header class="history-chart-head"><div><h2>Temperature History</h2><p>Temperature in °C</p></div><span class="history-chart-icon temperature-chart-icon" aria-hidden="true">♨</span></header>
+              <div class="history-chart-wrap"><svg class="history-chart" id="temperature-history-chart" viewBox="0 0 620 190" role="img" aria-label="Temperature history chart"></svg><div class="history-chart-tooltip" id="temperature-chart-tooltip" role="status" hidden></div></div>
+            </article>
+            <article class="history-chart-card">
+              <header class="history-chart-head"><div><h2>Turbidity History</h2><p>Turbidity in NTU</p></div><span class="history-chart-icon turbidity-chart-icon" aria-hidden="true">♢</span></header>
+              <div class="history-chart-wrap"><svg class="history-chart" id="turbidity-history-chart" viewBox="0 0 620 190" role="img" aria-label="Turbidity history chart"></svg><div class="history-chart-tooltip" id="turbidity-chart-tooltip" role="status" hidden></div></div>
+            </article>
+          </div>
+          <section class="history-empty" id="history-empty" hidden><h2>No readings available</h2><p>No sensor readings were recorded during the selected period.</p></section>
+          <section class="history-table-section" id="history-table-section" aria-labelledby="recent-readings-title">
+            <div class="history-table-heading"><h2 id="recent-readings-title">Recent Readings</h2><span id="history-record-summary"></span></div>
+            <div class="history-table-wrap"><table class="history-table"><thead><tr><th scope="col">TIME</th><th scope="col">TEMPERATURE</th><th scope="col">TURBIDITY</th><th scope="col">CONDITION</th><th scope="col">STATUS</th></tr></thead><tbody id="history-table-body"></tbody></table></div>
+            <nav class="history-pagination" id="history-pagination" aria-label="History pages"></nav>
+          </section>
+        </section>
+      </main>
+      <main class="content routed-view" id="alerts-page" hidden>
+        <section aria-labelledby="alerts-title">
+          <div class="section-heading"><div><h2 id="alerts-title">Alerts</h2><p>Abnormal events from the temperature and turbidity sensors.</p></div><a class="text-link" href="#dashboard">Back to dashboard</a></div>
+          <div class="alert-list" id="alert-list"></div>
+        </section>
+      </main>
+      <main class="content routed-view" id="profile-page" hidden>
+        <h1>Profile</h1><p class="account-intro">Manage your basic account information.</p>
+        <section class="account-card" aria-label="Account information">
+          <header class="account-hero"><span class="account-avatar" id="account-initials">JD</span><div><h2 id="account-name">Jamie Dela Cruz</h2><p id="account-email">jamie.delacruz@email.com</p></div></header>
+          <form id="profile-form" class="account-body" novalidate>
+            <div class="account-fields"><div><label for="profile-name">NAME</label><input id="profile-name" autocomplete="name" readonly aria-describedby="name-error"><small class="account-error" id="name-error"></small></div><div><label for="profile-email">EMAIL</label><input id="profile-email" type="email" autocomplete="email" readonly aria-describedby="email-error"><small class="account-error" id="email-error"></small></div></div>
+            <div class="account-actions"><button class="account-primary" id="edit-profile" type="button">Edit Profile</button><button class="account-primary" id="save-profile" type="submit" hidden>Save Changes</button><button class="account-secondary" id="cancel-profile" type="button" hidden>Cancel</button><button class="account-secondary" id="change-password" type="button">Change Password</button></div>
+            <p id="account-message" role="status"></p>
+          </form>
+        </section>
+      </main>
+      <main class="content routed-view" id="login-page" hidden><h1>Login</h1><p class="account-intro">Sign in to AquaSense.</p><form class="account-card account-body" id="login-form" novalidate><label for="login-email">EMAIL</label><input id="login-email" type="email" autocomplete="username"><label for="login-password">PASSWORD</label><input id="login-password" type="password" autocomplete="current-password"><p class="account-error" id="login-error" role="alert"></p><button class="account-primary">Login</button><p class="account-intro">Development account. Initial password: AquaSense123!</p></form></main>
+    </div>
+  </div>
+  <div class="modal-backdrop" id="account-modal" hidden><section class="modal" role="dialog" aria-modal="true" aria-labelledby="account-modal-title"><h2 id="account-modal-title">Change Password</h2><form id="password-form" novalidate><div id="password-fields"></div><div class="account-actions"><button class="account-secondary" type="button" id="password-cancel">Cancel</button><button class="account-primary" type="submit">Change Password</button></div></form><div id="logout-confirm" hidden><p>Are you sure you want to log out of AquaSense?</p><div class="account-actions"><button class="account-secondary" id="logout-cancel" type="button">Cancel</button><button class="account-primary" id="logout-confirm-button" type="button">Logout</button></div></div></section></div>
+  <script src="account.js"></script>
+  <div class="modal-backdrop" id="modal-backdrop" role="presentation">
+    <section class="modal fish-detail-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <header class="fish-detail-hero">
+        <img class="fish-detail-image" id="modal-fish-image" alt="">
+        <div class="fish-detail-hero-shade" aria-hidden="true"></div>
+        <button class="modal-close fish-detail-hero-close" id="modal-close" type="button" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
+        <div class="fish-detail-hero-copy"><span class="fish-suitable" id="modal-suitable-badge">Suitable</span><h2 id="modal-title">Guppy</h2></div>
+      </header>
+      <div class="fish-detail-body">
+        <section class="fish-detail-section fish-detail-compatibility-section"><h3>CURRENT COMPATIBILITY</h3><p class="fish-detail-compatibility match" id="modal-compatibility"><span class="compatibility-icon" id="modal-compatibility-icon" aria-hidden="true">✓</span><span id="modal-compatibility-text">Suitable based on monitored parameters</span></p></section>
+        <div class="fish-detail-conditions comparison-grid">
+          <section class="fish-detail-comparison"><h3>Your Aquarium</h3><div class="fish-detail-condition match" id="modal-temperature-condition"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 14.8V5a3 3 0 0 0-6 0v9.8a5 5 0 1 0 6 0Z"/><path d="M11 7v10"/></svg><strong>Temperature</strong><span id="modal-current-temperature">No Data</span></div><div class="fish-detail-condition match" id="modal-turbidity-condition"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3s7 7.2 7 12a7 7 0 0 1-14 0c0-4.8 7-12 7-12Z"/></svg><strong>Turbidity</strong><span id="modal-current-turbidity">No Data</span></div></section>
+          <section class="fish-detail-comparison"><h3>Preferred Conditions</h3><div class="fish-detail-condition"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 14.8V5a3 3 0 0 0-6 0v9.8a5 5 0 1 0 6 0Z"/><path d="M11 7v10"/></svg><strong>Temperature</strong><span id="modal-preferred-temperature">Not configured</span></div><div class="fish-detail-condition"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3s7 7.2 7 12a7 7 0 0 1-14 0c0-4.8 7-12 7-12Z"/></svg><strong>Water Condition</strong><span id="modal-preferred-turbidity">Not configured</span></div></section>
+        </div>
+        <div class="fish-detail-copy-grid"><section class="fish-detail-section"><h3>About</h3><p id="modal-about">Description is not available in the recommendation database.</p></section><section class="fish-detail-section"><h3>Why recommended?</h3><p id="modal-why">Compatibility is based only on monitored parameters.</p></section></div>
+        <div class="fish-detail-important">Compatibility recommendations are based only on temperature and turbidity monitored by this system. Other aquarium and species requirements should also be considered.</div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    (() => {
+      const staleAfterMs = 30000;
+      const demoMode = window.AQUASENSE_DEMO_MODE !== false;
+      const demoConfig = {
+        temperatureRangeC: { min: 24, max: 29, criticalMin: 18, criticalMax: 34 },
+        turbidityRangeNTU: { clearMax: 25, moderateMax: 50 },
+        turbidityUnit: 'NTU',
+        temperatureTrendC: [27.0, 27.2, 27.1, 27.5, 27.3, 27.4],
+        turbidityTrendNTU: [11.9, 12.1, 11.8, 12.4, 12.0, 12.8],
+        fishSpecies: [
+          { name: 'Guppy', preferredTemperature: { min: 22, max: 28 }, preferredTurbidity: { conditions: ['Clear'] }, description: 'A small, colorful freshwater aquarium fish.' },
+          { name: 'Molly', preferredTemperature: { min: 24, max: 28 }, preferredTurbidity: { conditions: ['Clear'] }, description: 'A peaceful livebearing freshwater aquarium fish.' },
+          { name: 'Betta', preferredTemperature: { min: 24, max: 28 }, preferredTurbidity: { conditions: ['Clear'] }, description: 'A freshwater fish known for its flowing fins.' },
+          { name: 'Platy', preferredTemperature: { min: 21, max: 28 }, preferredTurbidity: { conditions: ['Clear'] }, description: 'A small, active livebearing freshwater fish.' },
+          { name: 'Neon Tetra', preferredTemperature: { min: 21, max: 28 }, preferredTurbidity: { conditions: ['Clear'] }, description: 'A small schooling freshwater aquarium fish.' },
+          { name: 'Swordtail', preferredTemperature: { min: 22, max: 28 }, preferredTurbidity: { conditions: ['Clear'] }, description: 'An active livebearing freshwater aquarium fish.' }
+        ]
+      };
+      const config = window.AQUASENSE_CONFIG || {};
+      if (demoMode) {
+        Object.entries(demoConfig).forEach(([key, value]) => {
+          if (config[key] == null) config[key] = value;
+        });
+      }
+      const state = { reading: null, history: [], historyRecords: [], historyRange: 'today', historyPage: 1, historyRenderKey: null, alerts: [], unreadAlerts: 0, recommendationRenderKey: null };
+      const byId = (id) => document.getElementById(id);
+      const timeAgo = (timestamp) => {
+        const seconds = Math.max(0, Math.floor((Date.now() - timestamp) / 1000));
+        if (seconds < 5) return 'just now';
+        if (seconds < 60) return `${seconds} sec ago`;
+        const minutes = Math.floor(seconds / 60);
+        if (minutes < 60) return `${minutes} min ago`;
+        const hours = Math.floor(minutes / 60);
+        return `${hours} hr ago`;
+      };
+      const badge = (element, text, level) => {
+        element.textContent = text;
+        element.className = `state-badge${level ? ` ${level}` : ''}`;
+      };
+      const classifyTemperature = (value) => {
+        const range = config.temperatureRangeC;
+        if (!range || !Number.isFinite(range.min) || !Number.isFinite(range.max)) return { level: 'unknown', label: 'Range not set' };
+        if (value >= range.min && value <= range.max) return { level: 'normal', label: 'Normal' };
+        if ((Number.isFinite(range.criticalMin) && value < range.criticalMin) || (Number.isFinite(range.criticalMax) && value > range.criticalMax)) return { level: 'critical', label: value < range.min ? 'Low' : 'High' };
+        return { level: 'warning', label: value < range.min ? 'Low' : 'High' };
+      };
+      const classifyTurbidity = (value) => {
+        const range = config.turbidityRangeNTU;
+        if (!range || !Number.isFinite(range.clearMax) || !Number.isFinite(range.moderateMax)) return { level: 'unknown', label: 'Range not set', condition: 'Not configured' };
+        if (value <= range.clearMax) return { level: 'normal', label: 'Normal', condition: value === 0 ? 'Low Turbidity' : 'Clear' };
+        if (value <= range.moderateMax) return { level: 'warning', label: 'warning', condition: 'Moderate Turbidity' };
+        return { level: 'critical', label: 'critical', condition: 'High Turbidity' };
+      };
+      const recordFromReading = (reading) => {
+        const temperature = classifyTemperature(reading.temperatureC);
+        const turbidity = classifyTurbidity(reading.turbidityNTU);
+        const turbidityCondition = turbidity.condition === 'Moderate Turbidity' ? 'Moderate' : turbidity.condition === 'High Turbidity' ? 'High' : turbidity.condition;
+        const status = temperature.level === 'critical' || turbidity.level === 'critical'
+          ? 'Critical'
+          : temperature.level === 'warning' || turbidity.level === 'warning' || temperature.level === 'unknown' || turbidity.level === 'unknown'
+            ? 'Warning'
+            : 'Normal';
+        return {
+          timestamp: reading.receivedAt,
+          temperature: reading.temperatureC,
+          turbidity: reading.turbidityNTU,
+          turbidity_condition: turbidityCondition,
+          status
+        };
+      };
+      const createMockHistoryRecords = () => {
+        const now = Date.now();
+        const today = new Date(now);
+        today.setHours(0, 0, 0, 0);
+        const records = [];
+        for (let daysAgo = 29; daysAgo >= 1; daysAgo -= 1) {
+          for (const hour of [2, 8, 14, 20]) {
+            const timestamp = today.getTime() - daysAgo * 86400000 + hour * 3600000;
+            const sequence = daysAgo * 4 + hour;
+            records.push(recordFromReading({
+              timestamp,
+              receivedAt: timestamp,
+              temperatureC: Number((26.5 + Math.sin(sequence * .73) * 1.1 + Math.sin(sequence * .19) * .45).toFixed(1)),
+              turbidityNTU: Number((15.8 + Math.sin(sequence * .57) * 2.6 + Math.cos(sequence * .23) * 1.3).toFixed(1))
+            }));
+          }
+        }
+        const startHour = new Date(today);
+        startHour.setHours(8, 0, 0, 0);
+        const lastMockTime = now - 60 * 60 * 1000;
+        for (let timestamp = startHour.getTime(), index = 0; timestamp < lastMockTime; timestamp += 60 * 60 * 1000, index += 1) {
+          records.push(recordFromReading({
+            timestamp,
+            receivedAt: timestamp,
+            temperatureC: Number((26.7 + Math.sin(index * .9) * .75 + index * .035).toFixed(1)),
+            turbidityNTU: Number((16.5 + Math.sin(index * .8) * 1.4 + index * .22).toFixed(1))
+          }));
+        }
+        for (const sample of [
+          { hour: 14, minute: 14, temperatureC: 30.1, turbidityNTU: 28.4 },
+          { hour: 14, minute: 19, temperatureC: 27.2, turbidityNTU: 13.1 },
+          { hour: 14, minute: 24, temperatureC: 27.4, turbidityNTU: 12.8 }
+        ]) {
+          const timestamp = new Date(today);
+          timestamp.setHours(sample.hour, sample.minute, 0, 0);
+          if (timestamp.getTime() < lastMockTime) records.push(recordFromReading({ ...sample, receivedAt: timestamp.getTime() }));
+        }
+        records.sort((left, right) => left.timestamp - right.timestamp);
+        return records;
+      };
+      if (demoMode) state.historyRecords = createMockHistoryRecords();
+      const setSummary = (element, level, label) => {
+        const icon = level === 'normal' ? '✓' : level === 'warning' ? '⚠' : level === 'critical' ? '!' : '—';
+        element.textContent = `${icon} ${label}`;
+      };
+      const renderTrend = (id, values, label) => {
+        const trend = byId(id);
+        const usableValues = values.filter(Number.isFinite).slice(-6);
+        if (usableValues.length < 2) {
+          trend.hidden = true;
+          return;
+        }
+        const minimum = Math.min(...usableValues);
+        const maximum = Math.max(...usableValues);
+        const spread = Math.max(maximum - minimum, 0.1);
+        const points = usableValues.map((value, index) => {
+          const x = 3 + index * 126 / (usableValues.length - 1);
+          const y = 4 + (maximum - value) / spread * 32;
+          return `${x.toFixed(1)},${y.toFixed(1)}`;
+        }).join(' ');
+        trend.querySelector('polyline').setAttribute('points', points);
+        trend.setAttribute('aria-label', `${demoMode ? 'Mock' : 'Recent'} ${label} readings`);
+        trend.hidden = false;
+      };
+      const formatLastReceived = (timestamp) => {
+        const date = new Date(timestamp);
+        const day = date.toDateString() === new Date().toDateString() ? 'Today' : date.toLocaleDateString();
+        return `${day}, ${date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', second: '2-digit' })} (${timeAgo(timestamp)})`;
+      };
+      const updateMonitoringPage = (reading, online) => {
+        const hasTemperature = Boolean(reading && Number.isFinite(reading.temperatureC));
+        const hasTurbidity = Boolean(reading && Number.isFinite(reading.turbidityNTU));
+        const temperature = hasTemperature ? classifyTemperature(reading.temperatureC) : { level: 'no-data', label: 'No Data' };
+        const turbidity = hasTurbidity ? classifyTurbidity(reading.turbidityNTU) : { level: 'no-data', label: 'No Data', condition: 'No Data' };
+        const statusLabels = { normal: 'Normal', warning: 'Warning', critical: 'Critical', unknown: 'Range not set', 'no-data': 'No Data' };
+        const range = config.temperatureRangeC;
+        byId('monitoring-temperature-range').textContent = range && Number.isFinite(range.min) && Number.isFinite(range.max)
+          ? `Configured range: ${range.min}–${range.max}°C`
+          : 'Configured range not set';
+        const waterRange = config.turbidityRangeNTU;
+        const unit = config.turbidityUnit || 'sensor units';
+        byId('monitoring-turbidity-unit').textContent = unit;
+        byId('monitoring-turbidity-range').textContent = waterRange && Number.isFinite(waterRange.clearMax) && Number.isFinite(waterRange.moderateMax)
+          ? `Configured: Clear ≤ ${waterRange.clearMax} ${unit} · Moderate ≤ ${waterRange.moderateMax} ${unit}`
+          : 'Configured classification not set';
+        byId('monitoring-temperature-reading').textContent = hasTemperature ? reading.temperatureC.toFixed(1) : '—';
+        byId('monitoring-turbidity-reading').textContent = hasTurbidity ? reading.turbidityNTU.toFixed(1) : '—';
+        badge(byId('monitoring-temperature-badge'), !hasTemperature ? 'No Data' : online ? statusLabels[temperature.level] : 'Stale data', online ? temperature.level : '');
+        badge(byId('monitoring-turbidity-badge'), !hasTurbidity ? 'No Data' : online ? statusLabels[turbidity.level] : 'Stale data', online ? turbidity.level : '');
+        byId('monitoring-temperature-interpretation').textContent = !hasTemperature ? 'No Data' : !online ? 'Last reading is not live' : temperature.level === 'normal' ? 'Within configured range' : temperature.level === 'unknown' ? 'Configured range not set' : `Temperature is ${temperature.label.toLowerCase()} of configured range`;
+        byId('monitoring-turbidity-interpretation').textContent = !hasTurbidity ? 'No Data' : !online ? 'Last reading is not live' : turbidity.level === 'normal' ? `${turbidity.condition} · Within configured range` : turbidity.condition;
+        byId('monitoring-temperature-updated').textContent = hasTemperature ? `Updated ${timeAgo(reading.receivedAt)}` : 'No data received';
+        byId('monitoring-turbidity-updated').textContent = hasTurbidity ? `Updated ${timeAgo(reading.receivedAt)}` : 'No data received';
+        badge(byId('monitoring-device-badge'), online ? 'Online' : 'Offline', online ? 'normal' : 'critical');
+        byId('monitoring-esp-state').textContent = online ? 'Online' : 'Offline';
+        byId('monitoring-esp-state').className = `component-state ${online ? 'normal' : 'offline'}`;
+        byId('monitoring-temperature-sensor-state').textContent = online && hasTemperature ? 'Active' : 'No Data';
+        byId('monitoring-temperature-sensor-state').className = `component-state ${online && hasTemperature ? 'normal' : online ? 'warning' : 'offline'}`;
+        byId('monitoring-turbidity-sensor-state').textContent = online && hasTurbidity ? 'Active' : 'No Data';
+        byId('monitoring-turbidity-sensor-state').className = `component-state ${online && hasTurbidity ? 'normal' : online ? 'warning' : 'offline'}`;
+        byId('monitoring-last-received').textContent = reading ? formatLastReceived(reading.receivedAt) : 'No data received';
+        byId('monitoring-sync-pill').classList.toggle('live', online);
+        byId('monitoring-sync-state').textContent = online ? 'LIVE' : 'OFFLINE';
+        byId('monitoring-sync-time').textContent = online ? 'Streaming now' : reading ? `Last data received ${timeAgo(reading.receivedAt)}` : 'No data received';
+      };
+      const speciesImages = {
+        Guppy: 'assets/fish/guppy.jpg',
+        Molly: 'assets/fish/molly.jpg',
+        Betta: 'assets/fish/betta.jpg',
+        Platy: 'assets/fish/platy.jpg',
+        'Neon Tetra': 'assets/fish/neon-tetra.jpg',
+        Swordtail: 'assets/fish/swordtail.jpg'
+      };
+      const speciesRequirements = () => Array.isArray(config.fishSpecies) ? config.fishSpecies.slice(0, 6) : [];
+      const temperatureRequirement = (species) => species.preferredTemperature || species.temperatureRangeC;
+      const turbidityRequirement = (species) => species.preferredTurbidity || species.turbidityRequirement;
+      const hasUsableRequirements = (species) => {
+        const temperature = temperatureRequirement(species);
+        const turbidity = turbidityRequirement(species);
+        return temperature && Number.isFinite(temperature.min) && Number.isFinite(temperature.max)
+          && turbidity && (Array.isArray(turbidity.conditions) || Number.isFinite(turbidity.maxNTU));
+      };
+      const evaluateSpecies = (species, reading) => {
+        if (!hasUsableRequirements(species)) return null;
+        const temperature = temperatureRequirement(species);
+        const turbidity = turbidityRequirement(species);
+        const temperatureMatch = reading.temperatureC >= temperature.min && reading.temperatureC <= temperature.max;
+        const turbidityMatch = Array.isArray(turbidity.conditions)
+          ? turbidity.conditions.includes(classifyTurbidity(reading.turbidityNTU).condition)
+          : reading.turbidityNTU <= turbidity.maxNTU;
+        return { temperatureMatch, turbidityMatch, suitable: temperatureMatch && turbidityMatch };
+      };
+      const preferenceText = (species) => {
+        const temperature = temperatureRequirement(species);
+        const turbidity = turbidityRequirement(species);
+        const unit = config.turbidityUnit || 'sensor units';
+        return {
+          temperature: `${temperature.min}–${temperature.max}°C`,
+          turbidity: Array.isArray(turbidity.conditions) ? turbidity.conditions.join(' / ') : `≤ ${turbidity.maxNTU} ${unit}`
+        };
+      };
+      const appendCompatibilityCard = (species) => {
+        const preferences = preferenceText(species);
+        const card = document.createElement('article');
+        card.className = 'compatible-fish-card';
+        const imageWrap = document.createElement('div');
+        imageWrap.className = 'compatible-fish-image';
+        const image = document.createElement('img');
+        image.src = species.image || speciesImages[species.name] || speciesImages.Guppy;
+        image.alt = `${species.name} aquarium fish`;
+        image.loading = 'lazy';
+        const badgeElement = document.createElement('span');
+        badgeElement.className = 'fish-suitable';
+        badgeElement.textContent = 'Suitable';
+        imageWrap.append(image, badgeElement);
+        const content = document.createElement('div');
+        content.className = 'compatible-fish-content';
+        const name = document.createElement('h3');
+        name.textContent = species.name;
+        const reason = document.createElement('div');
+        reason.className = 'compatibility-reason';
+        reason.textContent = '✓ Matches the currently monitored parameters.';
+        const preferred = document.createElement('div');
+        preferred.className = 'preferred-grid';
+        preferred.innerHTML = `<div><span class="preferred-label">PREFERRED TEMPERATURE</span><span class="preferred-value"></span></div><div><span class="preferred-label">PREFERRED WATER CONDITION</span><span class="preferred-value"></span></div>`;
+        preferred.children[0].querySelector('.preferred-value').textContent = preferences.temperature;
+        preferred.children[1].querySelector('.preferred-value').textContent = preferences.turbidity;
+        const detailsButton = document.createElement('button');
+        detailsButton.className = 'view-details-button';
+        detailsButton.type = 'button';
+        detailsButton.innerHTML = 'View Details <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>';
+        detailsButton.addEventListener('click', () => openSpeciesDetails(species));
+        content.append(name, reason, preferred, detailsButton);
+        card.append(imageWrap, content);
+        byId('compatible-fish-grid').append(card);
+      };
+      const updateRecommendations = (reading, online) => {
+        const species = speciesRequirements();
+        const hasTemperature = Boolean(reading && Number.isFinite(reading.temperatureC));
+        const hasTurbidity = Boolean(reading && Number.isFinite(reading.turbidityNTU));
+        const liveAvailable = Boolean(online && hasTemperature && hasTurbidity);
+        const renderKey = JSON.stringify([liveAvailable, reading && reading.temperatureC, reading && reading.turbidityNTU, config.temperatureRangeC, config.turbidityRangeNTU, config.turbidityUnit, species]);
+        if (state.recommendationRenderKey === renderKey) return;
+        state.recommendationRenderKey = renderKey;
+        byId('compatible-fish-grid').replaceChildren();
+        byId('recommendation-unavailable').classList.toggle('visible', !liveAvailable);
+        byId('requirements-unavailable').classList.toggle('visible', liveAvailable && !species.some(hasUsableRequirements));
+        byId('no-compatible-fish').classList.remove('visible');
+        byId('last-recorded-reading').hidden = true;
+        byId('recommendation-live-state').textContent = liveAvailable ? 'Updated live' : 'Live data unavailable';
+        byId('recommendation-live-state').classList.toggle('offline', !liveAvailable);
+        byId('current-conditions-message').textContent = liveAvailable ? 'Live parameters used for matching' : 'Live readings unavailable';
+        byId('recommendation-temperature-value').textContent = liveAvailable ? `${reading.temperatureC.toFixed(1)}°C` : 'Live readings unavailable';
+        byId('recommendation-turbidity-value').textContent = liveAvailable ? `${reading.turbidityNTU.toFixed(1)} ${config.turbidityUnit || 'sensor units'}` : 'Live readings unavailable';
+        byId('recommendation-temperature-note').textContent = liveAvailable ? `${classifyTemperature(reading.temperatureC).label} ${classifyTemperature(reading.temperatureC).level === 'normal' ? '✓' : ''}` : 'No live data';
+        const turbidityResult = liveAvailable ? classifyTurbidity(reading.turbidityNTU) : null;
+        byId('recommendation-turbidity-note').textContent = liveAvailable ? `${turbidityResult.condition} ${turbidityResult.level === 'normal' ? '✓' : ''}` : 'No live data';
+        if (!liveAvailable) {
+          byId('compatible-count').textContent = 'Compatibility results';
+          byId('compatible-subtitle').textContent = 'Suitable based on monitored parameters.';
+          if (reading) {
+            byId('last-recorded-reading').hidden = false;
+            byId('last-recorded-reading').textContent = `Last recorded reading: ${hasTemperature ? `${reading.temperatureC.toFixed(1)}°C` : 'Temperature unavailable'} · ${hasTurbidity ? `${reading.turbidityNTU.toFixed(1)} ${config.turbidityUnit || 'sensor units'}` : 'Turbidity unavailable'} · ${timeAgo(reading.receivedAt)}. Current fish compatibility cannot be evaluated because live sensor readings are unavailable.`;
+          }
+          return;
+        }
+        const configuredSpecies = species.filter(hasUsableRequirements);
+        if (configuredSpecies.length === 0) {
+          byId('compatible-count').textContent = 'Compatibility results';
+          byId('compatible-subtitle').textContent = 'Suitable based on monitored parameters.';
+          return;
+        }
+        const matches = configuredSpecies.filter((fish) => evaluateSpecies(fish, reading).suitable);
+        byId('compatible-count').textContent = matches.length === 0 ? 'No Compatible Fish Found' : `${matches.length} Compatible Fish Found`;
+        byId('compatible-subtitle').textContent = 'Suitable based on monitored parameters.';
+        matches.forEach(appendCompatibilityCard);
+        if (matches.length === 0) {
+          const evaluations = configuredSpecies.map((fish) => ({ fish, result: evaluateSpecies(fish, reading) }));
+          const temperatureMatches = evaluations.filter(({ result }) => result.temperatureMatch);
+          const turbidityMatches = evaluations.filter(({ result }) => result.turbidityMatch);
+          const temperatureIssue = temperatureMatches.length === 0
+            ? evaluations.every(({ fish }) => reading.temperatureC < temperatureRequirement(fish).min) ? 'Below configured matching ranges' : 'Above configured matching ranges'
+            : `Within ranges for ${temperatureMatches.length} fish`;
+          const waterIssue = turbidityMatches.length === 0
+            ? `${classifyTurbidity(reading.turbidityNTU).condition} · Outside configured matching conditions`
+            : `${classifyTurbidity(reading.turbidityNTU).condition} · Within conditions for ${turbidityMatches.length} fish`;
+          byId('no-match-issues').innerHTML = '';
+          [[`Temperature · ${reading.temperatureC.toFixed(1)}°C`, temperatureIssue], [`Turbidity · ${reading.turbidityNTU.toFixed(1)} ${config.turbidityUnit || 'sensor units'}`, waterIssue]].forEach(([label, value]) => {
+            const issue = document.createElement('div');
+            issue.className = 'no-match-issue';
+            const title = document.createElement('strong');
+            title.textContent = label;
+            const explanation = document.createElement('span');
+            explanation.textContent = value;
+            issue.append(title, explanation);
+            byId('no-match-issues').append(issue);
+          });
+          if (temperatureMatches.length > 0 && turbidityMatches.length > 0) {
+            const note = document.createElement('p');
+            note.className = 'recommendation-no-match-note';
+            note.textContent = 'Some fish match one parameter, but none match both together.';
+            byId('no-match-issues').append(note);
+          }
+          byId('no-compatible-fish').classList.add('visible');
+        }
+      };
+      const historyDateTime = (timestamp, options = {}) => new Date(timestamp).toLocaleString([], options);
+      const historyTimeLabel = (timestamp, range) => {
+        const date = new Date(timestamp);
+        if (range === 'today') return date.toLocaleTimeString([], { hour: 'numeric', hour12: true }).replace(':00', '');
+        if (range === '7days') return date.toLocaleDateString([], { weekday: 'short' });
+        return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+      };
+      const historyRangeRecords = () => {
+        const now = Date.now();
+        let cutoff = new Date(now);
+        if (state.historyRange === 'today') cutoff.setHours(0, 0, 0, 0);
+        else cutoff = new Date(now - (state.historyRange === '7days' ? 7 : 30) * 86400000);
+        return state.historyRecords.filter((record) => record.timestamp >= cutoff.getTime() && record.timestamp <= now).sort((a, b) => a.timestamp - b.timestamp);
+      };
+      const sampleHistoryRecords = (records, maxSamples = 30) => {
+        if (records.length <= maxSamples) return records;
+        return Array.from({ length: maxSamples }, (_, index) => records[Math.round(index * (records.length - 1) / (maxSamples - 1))]);
+      };
+      const svgNode = (name, attributes = {}) => {
+        const element = document.createElementNS('http://www.w3.org/2000/svg', name);
+        Object.entries(attributes).forEach(([key, value]) => element.setAttribute(key, String(value)));
+        return element;
+      };
+      const showHistoryTooltip = (tooltip, chartWrap, point, record, parameter) => {
+        const isTemperature = parameter === 'temperature';
+        const value = isTemperature ? `${record.temperature.toFixed(1)}°C` : `${record.turbidity.toFixed(1)} NTU`;
+        tooltip.innerHTML = `<strong>${historyDateTime(record.timestamp, { hour: 'numeric', minute: '2-digit' })}</strong>${isTemperature ? 'Temperature' : 'Turbidity'}: ${value}${isTemperature ? '' : `<br>Condition: ${record.turbidity_condition}`}`;
+        const x = Number(point.getAttribute('cx')) / 620 * chartWrap.clientWidth;
+        const y = Number(point.getAttribute('cy')) / 190 * chartWrap.clientHeight;
+        tooltip.style.left = `${x}px`;
+        tooltip.style.top = `${y}px`;
+        tooltip.hidden = false;
+      };
+      const renderHistoryChart = (svgId, tooltipId, records, parameter, range) => {
+        const svg = byId(svgId);
+        const tooltip = byId(tooltipId);
+        svg.classList.toggle('temperature', parameter === 'temperature');
+        svg.classList.toggle('turbidity', parameter === 'turbidity');
+        svg.replaceChildren();
+        const values = records.map((record) => record[parameter]);
+        if (values.length === 0) { tooltip.hidden = true; return; }
+        const points = sampleHistoryRecords(records);
+        const minValue = Math.min(...values);
+        const maxValue = Math.max(...values);
+        const rawSpan = maxValue - minValue;
+        const step = parameter === 'temperature' ? 1 : rawSpan > 10 ? 5 : 2;
+        const domainMin = Math.floor((minValue - step * .35) / step) * step;
+        const domainMax = Math.ceil((maxValue + step * .35) / step) * step || domainMin + step;
+        const left = 42, right = 608, top = 13, bottom = 151;
+        const timeMin = records[0].timestamp;
+        const timeMax = records[records.length - 1].timestamp;
+        const yFor = (value) => bottom - (value - domainMin) / (domainMax - domainMin) * (bottom - top);
+        const xForTime = (timestamp) => timeMax === timeMin ? (left + right) / 2 : left + (timestamp - timeMin) / (timeMax - timeMin) * (right - left);
+        for (let tick = 0; tick <= 3; tick += 1) {
+          const value = domainMax - (domainMax - domainMin) * tick / 3;
+          const y = top + (bottom - top) * tick / 3;
+          svg.append(svgNode('line', { x1: left, y1: y, x2: right, y2: y, class: 'chart-gridline' }));
+          const label = svgNode('text', { x: 3, y: y + 3, class: 'chart-axis-label' });
+          label.textContent = `${Number(value.toFixed(1))}${parameter === 'temperature' ? '°C' : ' NTU'}`;
+          svg.append(label);
+        }
+        const coordinates = points.map((record) => [xForTime(record.timestamp), yFor(record[parameter])]);
+        const lineData = coordinates.map(([x, y]) => `${x},${y}`).join(' ');
+        const areaData = `M ${coordinates[0][0]} ${bottom} L ${coordinates.map(([x, y]) => `${x} ${y}`).join(' L ')} L ${coordinates[coordinates.length - 1][0]} ${bottom} Z`;
+        svg.append(svgNode('path', { d: areaData, class: 'chart-area' }));
+        svg.append(svgNode('polyline', { points: lineData, class: 'chart-line' }));
+        const axisTicks = [];
+        if (range === 'today') {
+          const startOfDay = new Date(records[0].timestamp);
+          startOfDay.setHours(0, 0, 0, 0);
+          [8, 11, 14, 17].forEach((hour) => {
+            const time = new Date(startOfDay);
+            time.setHours(hour, 0, 0, 0);
+            if (time.getTime() >= timeMin && time.getTime() <= timeMax) axisTicks.push(time.getTime());
+          });
+        } else if (range === '7days') {
+          const today = new Date(timeMax);
+          today.setHours(0, 0, 0, 0);
+          for (let daysAgo = 6; daysAgo >= 0; daysAgo -= 1) {
+            axisTicks.push(today.getTime() - daysAgo * 86400000);
+          }
+        } else {
+          const tickCount = 4;
+          for (let index = 0; index < tickCount; index += 1) axisTicks.push(timeMin + (timeMax - timeMin) * index / (tickCount - 1));
+        }
+        if (axisTicks.length === 0 || historyTimeLabel(axisTicks[axisTicks.length - 1], range) !== historyTimeLabel(timeMax, range)) axisTicks.push(timeMax);
+        const distinctTicks = axisTicks.filter((timestamp, index) => index === 0 || timestamp - axisTicks[index - 1] > 45 * 60 * 1000);
+        distinctTicks.forEach((timestamp, index) => {
+          const axisX = Math.max(left, Math.min(right, xForTime(timestamp)));
+          const label = svgNode('text', { x: axisX, y: 177, class: 'chart-axis-label', 'text-anchor': index === 0 ? 'start' : index === distinctTicks.length - 1 ? 'end' : 'middle' });
+          label.textContent = historyTimeLabel(timestamp, range);
+          svg.append(label);
+        });
+        coordinates.forEach(([x, y], index) => {
+          const point = svgNode('circle', { cx: x, cy: y, r: 3.4, class: 'chart-point', tabindex: 0, role: 'img' });
+          point.setAttribute('aria-label', `${historyDateTime(points[index].timestamp, { dateStyle: 'medium', timeStyle: 'short' })}, ${parameter === 'temperature' ? `${points[index].temperature.toFixed(1)} degrees Celsius` : `${points[index].turbidity.toFixed(1)} NTU, ${points[index].turbidity_condition}`}`);
+          point.addEventListener('pointerenter', () => showHistoryTooltip(tooltip, svg.parentElement, point, points[index], parameter));
+          point.addEventListener('pointerleave', () => { tooltip.hidden = true; });
+          point.addEventListener('focus', () => showHistoryTooltip(tooltip, svg.parentElement, point, points[index], parameter));
+          point.addEventListener('blur', () => { tooltip.hidden = true; });
+          svg.append(point);
+        });
+      };
+      const renderHistory = () => {
+        const allSelected = historyRangeRecords();
+        const newest = allSelected.slice().sort((a, b) => b.timestamp - a.timestamp);
+        const renderKey = `${state.historyRange}|${state.historyPage}|${state.historyRecords.length}|${state.historyRecords.at(-1)?.timestamp || ''}|${allSelected.length}`;
+        if (state.historyRenderKey === renderKey) return;
+        state.historyRenderKey = renderKey;
+        const hasRecords = allSelected.length > 0;
+        byId('history-charts').hidden = !hasRecords;
+        byId('history-table-section').hidden = !hasRecords;
+        byId('history-empty').hidden = hasRecords;
+        if (!hasRecords) {
+          byId('history-pagination').replaceChildren();
+          byId('history-record-summary').textContent = '';
+          byId('history-table-body').replaceChildren();
+          return;
+        }
+        renderHistoryChart('temperature-history-chart', 'temperature-chart-tooltip', allSelected, 'temperature', state.historyRange);
+        renderHistoryChart('turbidity-history-chart', 'turbidity-chart-tooltip', allSelected, 'turbidity', state.historyRange);
+        const pageSize = 10;
+        const pageCount = Math.ceil(newest.length / pageSize);
+        state.historyPage = Math.min(state.historyPage, pageCount);
+        const pageRecords = newest.slice((state.historyPage - 1) * pageSize, state.historyPage * pageSize);
+        const tbody = byId('history-table-body');
+        tbody.replaceChildren();
+        pageRecords.forEach((record) => {
+          const row = document.createElement('tr');
+          const cells = [
+            historyDateTime(record.timestamp, { hour: 'numeric', minute: '2-digit' }),
+            `${record.temperature.toFixed(1)}°C`,
+            `${record.turbidity.toFixed(1)} NTU`,
+            record.turbidity_condition,
+            record.status
+          ];
+          cells.forEach((value, index) => {
+            const cell = document.createElement('td');
+            if (index === 4) {
+              const badgeElement = document.createElement('span');
+              badgeElement.className = `history-status ${record.status.toLowerCase()}`;
+              badgeElement.textContent = record.status;
+              cell.append(badgeElement);
+            } else cell.textContent = value;
+            row.append(cell);
+          });
+          tbody.append(row);
+        });
+        const first = (state.historyPage - 1) * pageSize + 1;
+        byId('history-record-summary').textContent = `${first}–${Math.min(first + pageSize - 1, newest.length)} of ${newest.length} readings`;
+        renderHistoryPagination(pageCount);
+      };
+      const renderHistoryPagination = (pageCount) => {
+        const pagination = byId('history-pagination');
+        pagination.replaceChildren();
+        if (pageCount <= 1) return;
+        const addButton = (label, page, { active = false, disabled = false, ariaLabel = label } = {}) => {
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = `history-page-button${active ? ' active' : ''}`;
+          button.textContent = label;
+          button.setAttribute('aria-label', ariaLabel);
+          if (active) button.setAttribute('aria-current', 'page');
+          button.disabled = disabled;
+          button.addEventListener('click', () => { state.historyPage = page; state.historyRenderKey = null; renderHistory(); });
+          pagination.append(button);
+        };
+        addButton('Previous', Math.max(1, state.historyPage - 1), { disabled: state.historyPage === 1 });
+        const startPage = Math.max(1, Math.min(state.historyPage - 1, pageCount - 2));
+        const endPage = Math.min(pageCount, startPage + 2);
+        if (startPage > 1) pagination.append(document.createTextNode('…'));
+        for (let page = startPage; page <= endPage; page += 1) addButton(String(page), page, { active: page === state.historyPage, ariaLabel: `Page ${page}` });
+        if (endPage < pageCount) pagination.append(document.createTextNode('…'));
+        addButton('Next', Math.min(pageCount, state.historyPage + 1), { disabled: state.historyPage === pageCount });
+      };
+      window.aquaSenseSetHistoryRecords = (records) => {
+        state.historyRecords = Array.isArray(records) ? records.flatMap((record) => {
+          const timestamp = new Date(record.timestamp).getTime();
+          const temperature = Number(record.temperature);
+          const turbidity = Number(record.turbidity);
+          if (!Number.isFinite(timestamp) || !Number.isFinite(temperature) || !Number.isFinite(turbidity)) return [];
+          const derived = recordFromReading({ receivedAt: timestamp, temperatureC: temperature, turbidityNTU: turbidity });
+          return [{ ...derived, ...record, timestamp, temperature, turbidity, turbidity_condition: record.turbidity_condition || derived.turbidity_condition, status: record.status || derived.status }];
+        }).sort((left, right) => left.timestamp - right.timestamp) : [];
+        state.historyPage = 1;
+        state.historyRenderKey = null;
+        renderHistory();
+      };
+      const openSpeciesDetails = (species) => {
+        const reading = state.reading;
+        const online = Boolean(reading && Date.now() - reading.receivedAt <= staleAfterMs && reading.connected !== false);
+        const hasTemperature = online && Number.isFinite(reading.temperatureC);
+        const hasTurbidity = online && Number.isFinite(reading.turbidityNTU);
+        const result = hasTemperature && hasTurbidity ? evaluateSpecies(species, reading) : null;
+        const preferences = preferenceText(species);
+        byId('modal-title').textContent = species.name;
+        const suitableBadge = byId('modal-suitable-badge');
+        suitableBadge.textContent = result ? result.suitable ? 'Suitable' : 'Not currently compatible' : 'Live data unavailable';
+        suitableBadge.classList.toggle('pending', !result || !result.suitable);
+        byId('modal-fish-image').src = species.image || speciesImages[species.name] || speciesImages.Guppy;
+        byId('modal-fish-image').alt = `${species.name} aquarium fish`;
+        byId('modal-current-temperature').textContent = hasTemperature ? `${reading.temperatureC.toFixed(1)}°C ${result ? result.temperatureMatch ? '✓' : '✕' : ''}` : 'Live readings unavailable';
+        byId('modal-current-turbidity').textContent = hasTurbidity ? `${reading.turbidityNTU.toFixed(1)} ${config.turbidityUnit || 'sensor units'} — ${classifyTurbidity(reading.turbidityNTU).condition} ${result ? result.turbidityMatch ? '✓' : '✕' : ''}` : 'Live readings unavailable';
+        byId('modal-preferred-temperature').textContent = preferences.temperature;
+        byId('modal-preferred-turbidity').textContent = `${preferences.turbidity} / configured acceptable range`;
+        const compatibility = byId('modal-compatibility');
+        const compatibilityIcon = byId('modal-compatibility-icon');
+        const compatibilityText = byId('modal-compatibility-text');
+        compatibility.className = `fish-detail-compatibility ${result ? result.suitable ? 'match' : 'mismatch' : 'unavailable'}`;
+        compatibilityIcon.textContent = result ? result.suitable ? '✓' : '⚠' : '—';
+        compatibilityText.textContent = result ? result.suitable ? 'Suitable based on monitored parameters' : 'Not currently compatible' : 'Live readings unavailable';
+        if (!result) {
+          byId('modal-temperature-condition').className = 'fish-detail-condition unavailable';
+          byId('modal-turbidity-condition').className = 'fish-detail-condition unavailable';
+          byId('modal-why').textContent = 'Current compatibility cannot be evaluated until live temperature and turbidity readings are available.';
+        } else {
+          byId('modal-temperature-condition').className = `fish-detail-condition ${result.temperatureMatch ? 'match' : 'mismatch'}`;
+          byId('modal-turbidity-condition').className = `fish-detail-condition ${result.turbidityMatch ? 'match' : 'mismatch'}`;
+          if (result.suitable) {
+            byId('modal-why').textContent = `The current monitored temperature of ${reading.temperatureC.toFixed(1)}°C is within this fish's configured range, and the ${classifyTurbidity(reading.turbidityNTU).condition.toLowerCase()} turbidity condition matches its configured water requirement.`;
+          } else {
+            const reasons = [];
+            if (!result.temperatureMatch) reasons.push(`Current temperature of ${reading.temperatureC.toFixed(1)}°C is outside this fish's configured preferred range.`);
+            if (!result.turbidityMatch) reasons.push(`Current turbidity condition (${classifyTurbidity(reading.turbidityNTU).condition}) does not match its configured water requirement.`);
+            byId('modal-why').textContent = reasons.join(' ');
+          }
+        }
+        byId('modal-about').textContent = species.description || 'A commonly kept aquarium fish. Refer to trusted care resources for its complete needs.';
+        byId('modal-backdrop').classList.add('open');
+        byId('modal-close').focus();
+      };
+      const update = () => {
+        const reading = state.reading;
+        const fresh = reading && Date.now() - reading.receivedAt <= staleAfterMs;
+        const online = Boolean(fresh && reading.connected !== false);
+        const hasTemperature = Boolean(reading && Number.isFinite(reading.temperatureC));
+        const hasTurbidity = Boolean(reading && Number.isFinite(reading.turbidityNTU));
+        updateMonitoringPage(reading, online);
+        updateRecommendations(reading, online);
+        renderHistory();
+        const temperatureTrend = demoMode ? config.temperatureTrendC : state.history.map((entry) => entry.temperatureC);
+        const turbidityTrend = demoMode ? config.turbidityTrendNTU : state.history.map((entry) => entry.turbidityNTU);
+        renderTrend('temperature-trend', temperatureTrend || [], 'temperature');
+        renderTrend('monitoring-temperature-trend', temperatureTrend || [], 'temperature');
+        renderTrend('turbidity-trend', turbidityTrend || [], 'turbidity');
+        renderTrend('monitoring-turbidity-trend', turbidityTrend || [], 'turbidity');
+        byId('demo-data-label').hidden = !demoMode;
+        byId('turbidity-unit').textContent = config.turbidityUnit || 'sensor units';
+        byId('turbidity-note').textContent = config.turbidityUnit ? `Calibrated output in ${config.turbidityUnit}.` : 'Display unit follows sensor calibration.';
+        byId('alert-count').hidden = state.unreadAlerts === 0;
+        byId('alert-count').textContent = state.unreadAlerts;
+        byId('notification-mark').hidden = state.unreadAlerts === 0;
+        byId('system-pill').classList.toggle('online', online);
+        byId('system-status').textContent = online ? 'System Online' : 'Device Offline';
+        byId('system-data-label').textContent = online ? 'Live data' : reading && reading.connected === false ? 'No data received' : reading ? `Last data received ${timeAgo(reading.receivedAt)}` : 'No data received';
+        byId('sync-pill').classList.toggle('live', online);
+        byId('sync-state').textContent = online ? 'LIVE' : 'OFFLINE';
+        byId('sync-time').textContent = reading ? `Last sync ${timeAgo(reading.receivedAt)}` : 'No data received';
+        byId('device-title').textContent = online ? 'ESP32 connected' : 'ESP32 disconnected';
+        byId('device-subtitle').textContent = online ? 'Receiving live data' : 'No live data';
+        byId('device-dot').style.background = online ? 'var(--green)' : 'var(--red)';
+        byId('device-dot').style.boxShadow = online ? '0 0 0 4px rgba(28,167,122,.12)' : '0 0 0 4px rgba(232,95,102,.12)';
+        byId('device-dot').setAttribute('aria-label', online ? 'Connected' : 'Disconnected');
+        byId('temperature-reading').textContent = hasTemperature ? reading.temperatureC.toFixed(1) : '—';
+        byId('turbidity-reading').textContent = hasTurbidity ? reading.turbidityNTU.toFixed(1) : '—';
+        byId('temperature-updated').textContent = hasTemperature ? `Updated ${timeAgo(reading.receivedAt)}` : 'No reading received';
+        byId('turbidity-updated').textContent = hasTurbidity ? `Updated ${timeAgo(reading.receivedAt)}` : 'No reading received';
+
+        if (!reading) {
+          badge(byId('temperature-badge'), 'No data');
+          badge(byId('turbidity-badge'), 'No data');
+          byId('temperature-interpretation').textContent = 'Waiting for sensor data';
+          byId('turbidity-interpretation').textContent = 'Waiting for sensor data';
+          byId('condition-card').className = 'condition-card';
+          byId('condition-icon').textContent = '…';
+          byId('condition-state').textContent = 'WAITING';
+          byId('condition-explanation').textContent = 'Waiting for fresh temperature and turbidity readings to assess the configured ranges.';
+          setSummary(byId('temperature-summary'), 'unknown', 'Not available');
+          setSummary(byId('turbidity-summary'), 'unknown', 'Not available');
+          byId('overview-copy').textContent = 'Waiting for current temperature and turbidity readings.';
+          document.querySelectorAll('[data-fish-status]').forEach((item) => { item.textContent = 'Awaiting readings'; item.className = 'fish-suitable pending'; });
+          document.querySelectorAll('[data-recommendation-status]').forEach((item) => { item.textContent = 'Awaiting readings'; item.className = 'state-badge'; });
+          return;
+        }
+
+        const temperature = hasTemperature ? classifyTemperature(reading.temperatureC) : { level: 'no-data', label: 'No Data' };
+        const turbidity = hasTurbidity ? classifyTurbidity(reading.turbidityNTU) : { level: 'no-data', label: 'No Data', condition: 'No Data' };
+        const labels = { normal: 'Normal', warning: 'Warning', critical: 'Critical', unknown: 'Range not set', 'no-data': 'No Data' };
+        badge(byId('temperature-badge'), labels[temperature.level], temperature.level);
+        badge(byId('turbidity-badge'), labels[turbidity.level], turbidity.level);
+        byId('temperature-interpretation').textContent = temperature.level === 'no-data' ? 'No Data' : temperature.level === 'normal' ? 'Within configured range' : temperature.level === 'unknown' ? 'Acceptable range not configured' : `Temperature is ${temperature.label.toLowerCase()} of configured range`;
+        byId('turbidity-interpretation').textContent = turbidity.condition;
+        setSummary(byId('temperature-summary'), temperature.level, temperature.label);
+        setSummary(byId('turbidity-summary'), turbidity.level, turbidity.condition);
+        if (!online) {
+          badge(byId('temperature-badge'), hasTemperature ? 'Stale data' : 'No Data');
+          badge(byId('turbidity-badge'), hasTurbidity ? 'Stale data' : 'No Data');
+          byId('temperature-interpretation').textContent = hasTemperature ? `Last reading: ${temperature.level === 'normal' ? 'within configured range' : temperature.level === 'unknown' ? 'range not configured' : `${temperature.label.toLowerCase()} of configured range`}` : 'No Data';
+          byId('turbidity-interpretation').textContent = hasTurbidity ? `Last reading: ${turbidity.condition}` : 'No Data';
+          byId('temperature-summary').textContent = hasTemperature ? `Last known: ${temperature.label}` : '— No Data';
+          byId('turbidity-summary').textContent = hasTurbidity ? `Last known: ${turbidity.condition}` : '— No Data';
+          byId('condition-card').className = 'condition-card warning';
+          byId('condition-icon').textContent = '⚠';
+          byId('condition-state').textContent = 'WARNING';
+          byId('condition-explanation').textContent = 'Readings are stale. Current water condition cannot be confirmed until fresh sensor data arrives.';
+          byId('overview-copy').textContent = 'Showing the last received readings; they are not live.';
+          document.querySelectorAll('[data-fish-status]').forEach((item) => { item.textContent = 'Data is stale'; item.className = 'fish-suitable pending'; });
+          document.querySelectorAll('[data-recommendation-status]').forEach((item) => { item.textContent = 'Data is stale'; item.className = 'state-badge'; });
+          return;
+        }
+        const levels = [temperature.level, turbidity.level];
+        const overall = levels.includes('critical') ? 'critical' : levels.includes('warning') || levels.includes('unknown') || levels.includes('no-data') ? 'warning' : 'normal';
+        const title = overall === 'normal' ? 'GOOD' : overall === 'warning' ? 'WARNING' : 'CRITICAL';
+        const issue = temperature.level === 'no-data' ? 'Temperature sensor is not providing valid readings.' : temperature.level !== 'normal' ? `Temperature is ${temperature.level === 'unknown' ? 'missing a configured acceptable range' : `${temperature.label.toLowerCase()} of the configured acceptable range`}.` : turbidity.level === 'no-data' ? 'Turbidity sensor is not providing valid readings.' : turbidity.level !== 'normal' ? `Turbidity is ${turbidity.level === 'unknown' ? 'missing a configured acceptable range' : turbidity.condition.toLowerCase()}.` : 'Temperature and turbidity are currently within the configured acceptable ranges.';
+        byId('condition-card').className = `condition-card${overall === 'normal' ? '' : ` ${overall}`}`;
+        byId('condition-icon').textContent = overall === 'normal' ? '✓' : overall === 'warning' ? '⚠' : '!';
+        byId('condition-state').textContent = title;
+        byId('condition-explanation').textContent = issue;
+        byId('overview-copy').textContent = 'Your monitored water parameters are currently within the configured acceptable ranges.';
+        if (overall !== 'normal') byId('overview-copy').textContent = issue;
+        document.querySelectorAll('.fish-card').forEach((card) => {
+          const species = speciesRequirements().find((fish) => fish.name === card.dataset.fish);
+          const result = species && hasUsableRequirements(species) && hasTemperature && hasTurbidity ? evaluateSpecies(species, reading) : null;
+          const item = card.querySelector('[data-fish-status]');
+          item.textContent = result ? result.suitable ? 'Suitable' : 'Not a match' : 'Not evaluated';
+          const suitable = Boolean(result && result.suitable);
+          item.className = `fish-suitable${suitable ? '' : ' pending'}`;
+        });
+        document.querySelectorAll('[data-recommendation-status]').forEach((item) => {
+          const species = speciesRequirements().find((fish) => fish.name === item.dataset.recommendationStatus);
+          const result = species && hasUsableRequirements(species) && hasTemperature && hasTurbidity ? evaluateSpecies(species, reading) : null;
+          const suitable = Boolean(result && result.suitable);
+          item.textContent = suitable ? 'Suitable' : result ? 'Not a match' : 'Not evaluated';
+          item.className = `state-badge${suitable ? ' normal' : result ? ' warning' : ''}`;
+        });
+      };
+      const acceptReading = (detail) => {
+        if (!detail) return;
+        const temperatureC = detail.temperatureC == null ? null : Number(detail.temperatureC);
+        const turbidityNTU = detail.turbidityNTU == null ? null : Number(detail.turbidityNTU);
+        const hasTemperature = Number.isFinite(temperatureC);
+        const hasTurbidity = Number.isFinite(turbidityNTU);
+        if (!hasTemperature && !hasTurbidity && typeof detail.connected !== 'boolean') return;
+        const timestamp = detail.receivedAt ? new Date(detail.receivedAt).getTime() : Date.now();
+        if (!Number.isFinite(timestamp)) return;
+        if (!hasTemperature && !hasTurbidity && state.reading) {
+          state.reading.connected = detail.connected;
+          update();
+          return;
+        }
+        state.reading = { temperatureC: hasTemperature ? temperatureC : null, turbidityNTU: hasTurbidity ? turbidityNTU : null, receivedAt: timestamp, connected: detail.connected !== false, recommendations: detail.recommendations || {} };
+        state.history.push({ temperatureC: state.reading.temperatureC, turbidityNTU: state.reading.turbidityNTU, receivedAt: timestamp });
+        state.history = state.history.filter((item) => Date.now() - item.receivedAt <= 3600000).slice(-30);
+        if (hasTemperature && hasTurbidity) {
+          const nextRecord = recordFromReading(state.reading);
+          const lastRecord = state.historyRecords[state.historyRecords.length - 1];
+          const sameDemoSample = demoMode && lastRecord && lastRecord.temperature === nextRecord.temperature && lastRecord.turbidity === nextRecord.turbidity;
+          if (!lastRecord || (nextRecord.timestamp > lastRecord.timestamp && !sameDemoSample)) state.historyRecords.push(nextRecord);
+          const historyCutoff = Date.now() - 30 * 86400000;
+          state.historyRecords = state.historyRecords.filter((record) => record.timestamp >= historyCutoff);
+          state.historyRenderKey = null;
+        }
+        [
+          hasTemperature ? classifyTemperature(state.reading.temperatureC) : null,
+          hasTurbidity ? classifyTurbidity(state.reading.turbidityNTU) : null
+        ].forEach((status, index) => {
+          if (!status) return;
+          if (status.level === 'warning' || status.level === 'critical') {
+            const message = `${index === 0 ? 'Temperature' : 'Turbidity'}: ${status.label}.`;
+            if (state.alerts[state.alerts.length - 1] !== message) {
+              state.alerts.push(message);
+              state.alerts = state.alerts.slice(-10);
+              state.unreadAlerts += 1;
+            }
+          }
+        });
+        update();
+      };
+      window.aquaSenseUpdate = acceptReading;
+      window.aquaSenseConfigure = (nextConfig) => { Object.assign(config, nextConfig || {}); update(); };
+      document.querySelectorAll('[data-history-range]').forEach((button) => button.addEventListener('click', () => {
+        state.historyRange = button.dataset.historyRange;
+        state.historyPage = 1;
+        state.historyRenderKey = null;
+        document.querySelectorAll('[data-history-range]').forEach((item) => {
+          const active = item === button;
+          item.classList.toggle('active', active);
+          item.setAttribute('aria-pressed', String(active));
+        });
+        renderHistory();
+      }));
+      if (demoMode) {
+        acceptReading({ temperatureC: 27.4, turbidityNTU: 12.8, receivedAt: Date.now() - 10000, connected: true });
+        window.setInterval(() => {
+          if (state.reading && state.reading.connected !== false) {
+            acceptReading({ temperatureC: 27.4, turbidityNTU: 12.8, connected: true });
+          }
+        }, 10000);
+      }
+      window.addEventListener('aquasense:reading', (event) => acceptReading(event.detail));
+      window.setInterval(update, 1000);
+      update();
+
+      const modal = byId('modal-backdrop');
+      const closeModal = () => { modal.classList.remove('open'); };
+      const openModal = (title, copy, status) => {
+        byId('modal-title').textContent = title;
+        byId('modal-copy').textContent = copy;
+        byId('modal-status').textContent = status;
+        modal.classList.add('open');
+        byId('modal-close').focus();
+      };
+      document.querySelectorAll('.fish-card').forEach((card) => card.addEventListener('click', () => {
+        const name = card.dataset.fish;
+        const online = state.reading && Date.now() - state.reading.receivedAt <= staleAfterMs && state.reading.connected !== false;
+        openModal(`${name} recommendation`, online ? 'Compatibility is evaluated from the current temperature and turbidity ranges only.' : 'A current recommendation cannot be confirmed until fresh ESP32 temperature and turbidity readings are available.', online ? 'Based on current monitored parameters' : 'Awaiting current sensor data');
+      }));
+      const showAlerts = () => {
+        state.unreadAlerts = 0;
+        update();
+        if (location.hash === '#alerts') syncRoute();
+        else location.hash = '#alerts';
+      };
+      byId('notification-button').addEventListener('click', showAlerts);
+      document.querySelector('[href="#alerts"]').addEventListener('click', (event) => { event.preventDefault(); showAlerts(); });
+      byId('profile-button').addEventListener('click', () => { location.hash = '#profile'; });
+      document.querySelectorAll('[data-page]').forEach((link) => link.addEventListener('click', (event) => {
+        event.preventDefault();
+        const page = link.dataset.page;
+        if (page === 'Monitoring') {
+          if (location.hash === '#monitoring') syncRoute();
+          else location.hash = '#monitoring';
+        }
+        else if (page === 'History') {
+          if (location.hash === '#history') syncRoute();
+          else location.hash = '#history';
+        }
+        else if (page === 'Alerts') return;
+        else if (page === 'Profile') location.hash = '#profile';
+        else if (page === 'Logout') window.aquaSenseAccount.confirmLogout();
+      }));
+      function syncRoute() {
+        if (!window.aquaSenseAccount.isSignedIn() && location.hash !== '#login') { location.hash = '#login'; return; }
+        const route = location.hash;
+        const profile = route === '#profile';
+        const login = route === '#login';
+        const monitoring = route === '#monitoring';
+        const recommendations = route === '#fish-recommendations';
+        const history = route === '#history';
+        const alerts = route === '#alerts';
+        byId('dashboard').hidden = monitoring || recommendations || history || alerts || profile || login;
+        byId('profile-page').hidden = !profile;
+        byId('login-page').hidden = !login;
+        byId('profile-button').hidden = login;
+        byId('monitoring-page').hidden = !monitoring;
+        byId('fish-recommendations-page').hidden = !recommendations;
+        byId('history-page').hidden = !history;
+        byId('alerts-page').hidden = !alerts;
+        byId('topbar-title').textContent = profile ? 'Profile' : login ? 'Login' : monitoring ? 'Monitoring' : recommendations ? 'Fish Recommendation' : history ? 'History' : alerts ? 'Alerts' : 'Dashboard';
+        document.querySelectorAll('.nav-link').forEach((link) => link.classList.remove('active'));
+        const activeHref = profile ? '#profile' : login ? '#login' : monitoring ? '#monitoring' : recommendations ? '#fish-recommendations' : history ? '#history' : alerts ? '#alerts' : '#dashboard';
+        document.querySelector(`.nav-link[href="${activeHref}"]`)?.classList.add('active');
+        if (history) renderHistory();
+        if (alerts) {
+          state.unreadAlerts = 0;
+          update();
+          const list = byId('alert-list');
+          list.replaceChildren();
+          if (state.alerts.length === 0) {
+            const empty = document.createElement('div');
+            empty.className = 'empty-state';
+            empty.textContent = 'No sensor alerts yet. Alerts will appear when a fresh reading falls outside a configured range.';
+            list.append(empty);
+          } else {
+            state.alerts.slice().reverse().forEach((message) => {
+              const row = document.createElement('article');
+              row.className = 'alert-row';
+              const icon = document.createElement('span');
+              icon.className = 'alert-icon';
+              icon.textContent = '!';
+              const copy = document.createElement('span');
+              copy.className = 'alert-copy';
+              copy.textContent = message;
+              const time = document.createElement('span');
+              time.className = 'alert-time';
+              time.textContent = state.reading ? `Last reading ${timeAgo(state.reading.receivedAt)}` : '';
+              row.append(icon, copy, time);
+              list.append(row);
+            });
+          }
+        }
+      }
+      window.addEventListener('hashchange', syncRoute);
+      syncRoute();
+      byId('modal-close').addEventListener('click', closeModal);
+      modal.addEventListener('click', (event) => { if (event.target === modal) closeModal(); });
+      document.addEventListener('keydown', (event) => { if (event.key === 'Escape') closeModal(); });
+
+      const hour = new Date().getHours();
+      window.aquaSenseAccount.render();
+    })();
+  </script>
+</body>
+</html>

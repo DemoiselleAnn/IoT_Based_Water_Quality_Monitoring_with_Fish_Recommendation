@@ -1,0 +1,10 @@
+Fish photo credits
+
+Guppy: Holger Krisp, https://commons.wikimedia.org/wiki/File:Guppy_Poecilia_reticulata.jpg, CC BY 3.0 (https://creativecommons.org/licenses/by/3.0/)
+Molly: Hugo Torres, https://commons.wikimedia.org/wiki/File:Poecilia_sphenops.jpg, CC BY 2.5 ES (https://creativecommons.org/licenses/by/2.5/es/)
+Betta: Daniella Vereeken, https://commons.wikimedia.org/wiki/File:HM_Orange_M_Sarawut.jpg, CC BY 2.0 (https://creativecommons.org/licenses/by/2.0/)
+Platy: Marrabbio2, https://commons.wikimedia.org/wiki/File:Rainbow_wag_platy.jpg, CC BY-SA 3.0 (https://creativecommons.org/licenses/by-sa/3.0/)
+Neon Tetra: Holger Krisp, https://commons.wikimedia.org/wiki/File:Neonsalmler_Paracheirodon_innesi.jpg, CC BY 3.0 (https://creativecommons.org/licenses/by/3.0/)
+Swordtail: Usien, https://commons.wikimedia.org/wiki/File:Xiphophorus_helleri_Annanasschwerttaeger_Maennchen.JPG, CC0 (https://creativecommons.org/publicdomain/zero/1.0/)
+
+The local image files are Commons thumbnails; the associated descriptions and licenses are linked above.
