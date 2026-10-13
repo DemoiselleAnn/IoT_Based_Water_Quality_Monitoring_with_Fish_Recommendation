@@ -575,6 +575,7 @@
 .account-body input[readonly] { padding-left: 0; border-color: transparent; background: transparent; }
 .account-body input:focus-visible, .password-input input:focus-visible { outline: 2px solid var(--aqua); outline-offset: 2px; }
 .account-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+.login-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
 .account-primary, .account-secondary { padding: 12px 18px; border-radius: 10px; cursor: pointer; font-size: 12px; font-weight: 700; border: 1px solid #cce0e8; background: white; }
 .account-primary { border-color: var(--aqua-dark); background: var(--aqua-dark); color: white; }
 .account-error { display: block; color: #c33f48; font-size: 12px; margin-top: 5px; }

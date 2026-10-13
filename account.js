@@ -2,7 +2,8 @@
   const $ = id => document.getElementById(id);
   // Development adapter only: replace with authenticated account APIs in production.
   const key = 'aquasense.mock.profile';
-  const account = { name: 'Jamie Dela Cruz', email: 'jamie.delacruz@email.com', password: 'AquaSense123!' };
+  const demoAccount = { name: 'Jamie Dela Cruz', email: 'jamie.delacruz@email.com', password: 'AquaSense123!' };
+  const account = { ...demoAccount };
   try { const saved = JSON.parse(localStorage.getItem(key)); if (saved && typeof saved.name === 'string' && typeof saved.email === 'string') Object.assign(account, { name: saved.name, email: saved.email }); } catch {}
   let signedIn = sessionStorage.getItem('aquasense.mock.signedOut') !== 'true';
   let editing = false, returnFocus;
@@ -74,7 +75,28 @@
     account.password = next; close(); $('account-message').textContent = 'Password changed successfully.';
   };
   $('logout-confirm-button').onclick = () => { sessionStorage.setItem('aquasense.mock.signedOut', 'true'); signedIn = false; setEditing(false); close(); $('login-form').reset(); location.hash = '#login'; };
-  $('login-form').onsubmit = event => { event.preventDefault(); if ($('login-email').value.trim().toLowerCase() !== account.email.toLowerCase() || $('login-password').value !== account.password) { $('login-error').textContent = 'Email or password is incorrect.'; return; } sessionStorage.removeItem('aquasense.mock.signedOut'); signedIn = true; $('login-error').textContent = ''; $('login-form').reset(); location.hash = '#dashboard'; };
+  $('use-demo-login').onclick = () => {
+    $('login-email').value = demoAccount.email;
+    $('login-password').value = demoAccount.password;
+    $('login-error').textContent = '';
+    $('login-form').requestSubmit();
+  };
+  $('login-form').onsubmit = event => {
+    event.preventDefault();
+    const email = $('login-email').value.trim().toLowerCase();
+    const password = $('login-password').value.trim();
+    const matchesCurrent = email === account.email.toLowerCase() && password === account.password;
+    const matchesDemo = email === demoAccount.email.toLowerCase() && password === demoAccount.password;
+    if (!matchesCurrent && !matchesDemo) {
+      $('login-error').textContent = 'Use jamie.delacruz@email.com and AquaSense123!, or click Use demo account.';
+      return;
+    }
+    sessionStorage.removeItem('aquasense.mock.signedOut');
+    signedIn = true;
+    $('login-error').textContent = '';
+    $('login-form').reset();
+    location.hash = '#dashboard';
+  };
   $('account-modal').onclick = event => { if (event.target === $('account-modal')) close(); };
   document.addEventListener('keydown', event => {
     if (!$('account-modal').classList.contains('open')) return;
