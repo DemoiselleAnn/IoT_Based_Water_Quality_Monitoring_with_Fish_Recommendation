@@ -36,6 +36,8 @@ The ESP32 chooses the LED color after reading both temperature and turbidity:
 | Yellow | Temperature is moderate or turbidity is moderate |
 | Red | Temperature is hot or turbidity is high |
 
+The default fish water temperature range is `20-30°C`, with `25°C` as the ideal target.
+
 ## Run the Dashboard
 
 Install Node.js 18 or newer, then run:

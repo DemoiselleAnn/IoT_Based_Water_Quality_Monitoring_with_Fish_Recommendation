@@ -25,9 +25,10 @@ const char* DEVICE_ID = "aquasense-esp32";
 OneWire oneWire(DS18B20_PIN);
 DallasTemperature sensors(&oneWire);
 
-const float TEMP_COLD = 25.0;
-const float TEMP_NORMAL_MAX = 32.75;
-const float TEMP_HOT = 37.0;
+const float TEMP_COLD = 20.0;
+const float TEMP_IDEAL = 25.0;
+const float TEMP_NORMAL_MAX = 30.0;
+const float TEMP_HOT = 30.0;
 
 const unsigned long COLD_BEEP = 4000;
 const unsigned long NORMAL_BEEP = 5000;
