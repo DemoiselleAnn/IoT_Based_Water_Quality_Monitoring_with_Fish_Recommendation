@@ -112,7 +112,7 @@ const server = http.createServer(async (req, res) => {
     if (req.method === 'GET' && url.pathname === '/config.js') {
       const config = {
         apiBaseUrl: '',
-        temperatureRangeC: { min: 24, max: 29, criticalMin: 18, criticalMax: 34 },
+        temperatureRangeC: { min: 25, max: 32.75, criticalMin: 18, criticalMax: 37 },
         turbidityRangeNTU: { clearMax: 25, moderateMax: 50 },
         turbidityUnit: 'NTU',
         fishSpecies: [
