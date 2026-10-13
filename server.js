@@ -113,7 +113,7 @@ const server = http.createServer(async (req, res) => {
       const config = {
         apiBaseUrl: '',
         temperatureRangeC: { min: 20, max: 30, ideal: 25, criticalMin: 20, criticalMax: 30 },
-        turbidityRangeNTU: { clearMax: 25, moderateMax: 50 },
+        turbidityRangeNTU: { clearMax: 25, moderateMax: 65 },
         turbidityUnit: 'NTU',
         fishSpecies: [
           { name: 'Guppy', preferredTemperature: { min: 22, max: 28 }, preferredTurbidity: { conditions: ['Clear'] }, description: 'A small, colorful freshwater aquarium fish.' },

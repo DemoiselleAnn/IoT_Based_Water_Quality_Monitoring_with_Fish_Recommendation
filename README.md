@@ -91,8 +91,8 @@ const float CLOUDY_WATER_VOLTAGE = 0.80;
 Put the probe in clean water, note the voltage printed in Serial Monitor, and set `CLEAR_WATER_VOLTAGE`. Put it in very cloudy water, note the voltage, and set `CLOUDY_WATER_VOLTAGE`. The dashboard classifies estimated turbidity as:
 
 - Clear: `0-25 NTU`
-- Moderate: `25-50 NTU`
-- High: above `50 NTU`
+- Moderate: `25-65 NTU`
+- High: above `65 NTU`
 
 ## API
 

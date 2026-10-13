@@ -196,7 +196,7 @@ float voltageToNtu(float voltage) {
 
 String classifyTurbidity(float ntu) {
   if (ntu <= 25.0) return "Clear";
-  if (ntu <= 50.0) return "Moderate";
+  if (ntu <= 65.0) return "Moderate";
   return "High";
 }
 
