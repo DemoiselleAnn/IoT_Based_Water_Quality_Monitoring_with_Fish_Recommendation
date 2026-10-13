@@ -133,6 +133,15 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
+    if (req.method === 'GET' && url.pathname === '/api/readings') {
+      send(res, 200, JSON.stringify({
+        latest: latestReading(),
+        history: historyRecords(),
+        note: 'ESP32 devices POST new readings to this URL. Browser GET requests show stored readings.'
+      }));
+      return;
+    }
+
     if (req.method === 'GET' && url.pathname === '/api/history') {
       send(res, 200, JSON.stringify(historyRecords()));
       return;
