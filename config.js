@@ -1,0 +1,2 @@
+window.AQUASENSE_DEMO_MODE = true;
+window.AQUASENSE_CONFIG = window.AQUASENSE_CONFIG || {};

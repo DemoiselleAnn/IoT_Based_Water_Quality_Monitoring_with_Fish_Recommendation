@@ -189,6 +189,7 @@
     </div>
   </div>
   <div class="modal-backdrop" id="account-modal" hidden><section class="modal" role="dialog" aria-modal="true" aria-labelledby="account-modal-title"><h2 id="account-modal-title">Change Password</h2><form id="password-form" novalidate><div id="password-fields"></div><div class="account-actions"><button class="account-secondary" type="button" id="password-cancel">Cancel</button><button class="account-primary" type="submit">Change Password</button></div></form><div id="logout-confirm" hidden><p>Are you sure you want to log out of AquaSense?</p><div class="account-actions"><button class="account-secondary" id="logout-cancel" type="button">Cancel</button><button class="account-primary" id="logout-confirm-button" type="button">Logout</button></div></div></section></div>
+  <script src="config.js"></script>
   <script src="account.js"></script>
   <div class="modal-backdrop" id="modal-backdrop" role="presentation">
     <section class="modal fish-detail-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
@@ -213,6 +214,7 @@
   <script>
     (() => {
       const staleAfterMs = 30000;
+      const pollIntervalMs = 2000;
       const demoMode = window.AQUASENSE_DEMO_MODE !== false;
       const demoConfig = {
         temperatureRangeC: { min: 24, max: 29, criticalMin: 18, criticalMax: 34 },
@@ -907,6 +909,27 @@
       };
       window.aquaSenseUpdate = acceptReading;
       window.aquaSenseConfigure = (nextConfig) => { Object.assign(config, nextConfig || {}); update(); };
+      const apiBase = (config.apiBaseUrl || '').replace(/\/$/, '');
+      const apiJson = async (path) => {
+        const response = await fetch(`${apiBase}${path}`, { cache: 'no-store' });
+        if (!response.ok) throw new Error(`Request failed: ${response.status}`);
+        return response.json();
+      };
+      const pollSensorApi = async () => {
+        try {
+          const reading = await apiJson('/api/reading');
+          if (reading && reading.receivedAt) acceptReading(reading);
+          else if (state.reading) acceptReading({ connected: false });
+        } catch {
+          if (state.reading) acceptReading({ connected: false });
+        }
+      };
+      const loadSensorHistory = async () => {
+        try {
+          const records = await apiJson('/api/history');
+          if (Array.isArray(records)) window.aquaSenseSetHistoryRecords(records);
+        } catch {}
+      };
       document.querySelectorAll('[data-history-range]').forEach((button) => button.addEventListener('click', () => {
         state.historyRange = button.dataset.historyRange;
         state.historyPage = 1;
@@ -925,6 +948,11 @@
             acceptReading({ temperatureC: 27.4, turbidityNTU: 12.8, connected: true });
           }
         }, 10000);
+      } else {
+        loadSensorHistory();
+        pollSensorApi();
+        window.setInterval(pollSensorApi, pollIntervalMs);
+        window.setInterval(loadSensorHistory, 30000);
       }
       window.addEventListener('aquasense:reading', (event) => acceptReading(event.detail));
       window.setInterval(update, 1000);
@@ -942,7 +970,8 @@
       document.querySelectorAll('.fish-card').forEach((card) => card.addEventListener('click', () => {
         const name = card.dataset.fish;
         const online = state.reading && Date.now() - state.reading.receivedAt <= staleAfterMs && state.reading.connected !== false;
-        openModal(`${name} recommendation`, online ? 'Compatibility is evaluated from the current temperature and turbidity ranges only.' : 'A current recommendation cannot be confirmed until fresh ESP32 temperature and turbidity readings are available.', online ? 'Based on current monitored parameters' : 'Awaiting current sensor data');
+        const species = speciesRequirements().find((fish) => fish.name === name);
+        if (species) openSpeciesDetails(species);
       }));
       const showAlerts = () => {
         state.unreadAlerts = 0;

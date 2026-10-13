@@ -1,0 +1,12 @@
+{
+  "name": "aquasense-esp32-dashboard",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Local dashboard and API for an ESP32 water quality monitor.",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
