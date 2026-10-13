@@ -25,6 +25,17 @@ AquaSense is a local dashboard for an ESP32 with a DS18B20 water temperature sen
 
 Connect all grounds together. Power the DS18B20 from 3.3V and place a 4.7k resistor between DS18B20 data and 3.3V. Make sure the turbidity module analog output is safe for the ESP32 ADC input; use a voltage divider if the module can output above 3.3V.
 
+## LED Status
+
+The ESP32 chooses the LED color after reading both temperature and turbidity:
+
+| LED | Meaning |
+| --- | --- |
+| Green | Temperature is normal and turbidity is clear |
+| Blue | Temperature is cold and turbidity is clear |
+| Yellow | Temperature is moderate or turbidity is moderate |
+| Red | Temperature is hot or turbidity is high |
+
 ## Run the Dashboard
 
 Install Node.js 18 or newer, then run:

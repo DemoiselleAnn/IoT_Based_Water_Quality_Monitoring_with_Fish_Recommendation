@@ -111,15 +111,6 @@ String updateTemperature(float temp) {
     label = "HOT";
   }
 
-  allLEDsOff();
-
-  switch (newStatus) {
-    case 0: digitalWrite(BLUE_LED, HIGH); break;
-    case 1: digitalWrite(GREEN_LED, HIGH); break;
-    case 2: digitalWrite(YELLOW_LED, HIGH); break;
-    case 3: digitalWrite(RED_LED, HIGH); break;
-  }
-
   Serial.print("Status: ");
   Serial.println(label);
   Serial.print("Buzzer interval: ");
@@ -132,6 +123,31 @@ String updateTemperature(float temp) {
   }
 
   return label;
+}
+
+void updateStatusLEDs(const String& temperatureStatus, const String& turbidityCondition) {
+  allLEDsOff();
+
+  if (temperatureStatus == "HOT" || turbidityCondition == "High") {
+    digitalWrite(RED_LED, HIGH);
+    Serial.println("LED Status: RED - critical temperature or high turbidity");
+    return;
+  }
+
+  if (temperatureStatus == "MODERATE" || turbidityCondition == "Moderate") {
+    digitalWrite(YELLOW_LED, HIGH);
+    Serial.println("LED Status: YELLOW - warning temperature or moderate turbidity");
+    return;
+  }
+
+  if (temperatureStatus == "COLD") {
+    digitalWrite(BLUE_LED, HIGH);
+    Serial.println("LED Status: BLUE - cold water");
+    return;
+  }
+
+  digitalWrite(GREEN_LED, HIGH);
+  Serial.println("LED Status: GREEN - temperature normal and water clear");
 }
 
 void connectWiFi() {
@@ -288,6 +304,7 @@ void loop() {
     Serial.println(turbidityCondition);
 
     if (temperatureValid) {
+      updateStatusLEDs(temperatureStatus, turbidityCondition);
       postReading(temp, turbidityRaw, turbidityVoltage, turbidityNTU, temperatureStatus, turbidityCondition);
     }
 
