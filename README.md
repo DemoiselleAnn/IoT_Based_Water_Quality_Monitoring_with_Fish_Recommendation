@@ -90,9 +90,11 @@ const float CLOUDY_WATER_VOLTAGE = 0.80;
 
 Put the probe in clean water, note the voltage printed in Serial Monitor, and set `CLEAR_WATER_VOLTAGE`. Put it in very cloudy water, note the voltage, and set `CLOUDY_WATER_VOLTAGE`. The dashboard classifies estimated turbidity as:
 
-- Clear: `0-25 NTU`
-- Moderate: `25-65 NTU`
-- High: above `65 NTU`
+- Normal (clear water): `0-25 NTU`, green indicator
+- Moderate: above `25` through `65 NTU`, yellow indicator
+- Critical / High Turbidity: above `65 NTU`, red indicator
+
+The dashboard shows the turbidity LED color on both the overview and Live Monitoring cards. The ESP32 uses the same turbidity thresholds (its firmware reports normal water as `Clear`). The physical LED also considers temperature: hot water selects red, moderate temperature selects yellow, and cold water with normal turbidity selects blue.
 
 ## API
 

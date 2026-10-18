@@ -262,9 +262,9 @@
       const classifyTurbidity = (value) => {
         const range = config.turbidityRangeNTU;
         if (!range || !Number.isFinite(range.clearMax) || !Number.isFinite(range.moderateMax)) return { level: 'unknown', label: 'Range not set', condition: 'Not configured' };
-        if (value <= range.clearMax) return { level: 'normal', label: 'Normal', condition: value === 0 ? 'Low Turbidity' : 'Clear' };
-        if (value <= range.moderateMax) return { level: 'warning', label: 'warning', condition: 'Moderate Turbidity' };
-        return { level: 'critical', label: 'critical', condition: 'High Turbidity' };
+        if (value <= range.clearMax) return { level: 'normal', label: 'Normal', condition: 'Normal', led: 'Green' };
+        if (value <= range.moderateMax) return { level: 'warning', label: 'Moderate', condition: 'Moderate Turbidity', led: 'Yellow' };
+        return { level: 'critical', label: 'Critical', condition: 'High Turbidity', led: 'Red' };
       };
       const recordFromReading = (reading) => {
         const temperature = classifyTemperature(reading.temperatureC);
@@ -366,14 +366,14 @@
         const unit = config.turbidityUnit || 'sensor units';
         byId('monitoring-turbidity-unit').textContent = unit;
         byId('monitoring-turbidity-range').textContent = waterRange && Number.isFinite(waterRange.clearMax) && Number.isFinite(waterRange.moderateMax)
-          ? `Configured: Clear ≤ ${waterRange.clearMax} ${unit} · Moderate ≤ ${waterRange.moderateMax} ${unit}`
+          ? `Normal ≤ ${waterRange.clearMax} ${unit} · Moderate ≤ ${waterRange.moderateMax} ${unit} · Critical > ${waterRange.moderateMax} ${unit}`
           : 'Configured classification not set';
         byId('monitoring-temperature-reading').textContent = hasTemperature ? reading.temperatureC.toFixed(1) : '—';
         byId('monitoring-turbidity-reading').textContent = hasTurbidity ? reading.turbidityNTU.toFixed(1) : '—';
         badge(byId('monitoring-temperature-badge'), !hasTemperature ? 'No Data' : online ? statusLabels[temperature.level] : 'Stale data', online ? temperature.level : '');
-        badge(byId('monitoring-turbidity-badge'), !hasTurbidity ? 'No Data' : online ? statusLabels[turbidity.level] : 'Stale data', online ? turbidity.level : '');
+        badge(byId('monitoring-turbidity-badge'), !hasTurbidity ? 'No Data' : online ? turbidity.label : 'Stale data', online ? turbidity.level : '');
         byId('monitoring-temperature-interpretation').textContent = !hasTemperature ? 'No Data' : !online ? 'Last reading is not live' : temperature.level === 'normal' ? 'Within configured range' : temperature.level === 'unknown' ? 'Configured range not set' : `Temperature is ${temperature.label.toLowerCase()} of configured range`;
-        byId('monitoring-turbidity-interpretation').textContent = !hasTurbidity ? 'No Data' : !online ? 'Last reading is not live' : turbidity.level === 'normal' ? `${turbidity.condition} · Within configured range` : turbidity.condition;
+        byId('monitoring-turbidity-interpretation').textContent = !hasTurbidity ? 'No Data' : !online ? 'Last reading is not live' : turbidity.led ? `${turbidity.condition} · ${turbidity.led} LED` : turbidity.condition;
         byId('monitoring-temperature-updated').textContent = hasTemperature ? `Updated ${timeAgo(reading.receivedAt)}` : 'No data received';
         byId('monitoring-turbidity-updated').textContent = hasTurbidity ? `Updated ${timeAgo(reading.receivedAt)}` : 'No data received';
         badge(byId('monitoring-device-badge'), online ? 'Online' : 'Offline', online ? 'normal' : 'critical');
@@ -411,7 +411,7 @@
         const turbidity = turbidityRequirement(species);
         const temperatureMatch = reading.temperatureC >= temperature.min && reading.temperatureC <= temperature.max;
         const turbidityMatch = Array.isArray(turbidity.conditions)
-          ? turbidity.conditions.includes(classifyTurbidity(reading.turbidityNTU).condition)
+          ? turbidity.conditions.some((condition) => (condition === 'Clear' ? 'Normal' : condition) === classifyTurbidity(reading.turbidityNTU).condition)
           : reading.turbidityNTU <= turbidity.maxNTU;
         return { temperatureMatch, turbidityMatch, suitable: temperatureMatch && turbidityMatch };
       };
@@ -421,7 +421,7 @@
         const unit = config.turbidityUnit || 'sensor units';
         return {
           temperature: `${temperature.min}–${temperature.max}°C`,
-          turbidity: Array.isArray(turbidity.conditions) ? turbidity.conditions.join(' / ') : `≤ ${turbidity.maxNTU} ${unit}`
+          turbidity: Array.isArray(turbidity.conditions) ? turbidity.conditions.map((condition) => condition === 'Clear' ? 'Normal' : condition).join(' / ') : `≤ ${turbidity.maxNTU} ${unit}`
         };
       };
       const appendCompatibilityCard = (species) => {
@@ -711,7 +711,7 @@
           const turbidity = Number(record.turbidity);
           if (!Number.isFinite(timestamp) || !Number.isFinite(temperature) || !Number.isFinite(turbidity)) return [];
           const derived = recordFromReading({ receivedAt: timestamp, temperatureC: temperature, turbidityNTU: turbidity });
-          return [{ ...derived, ...record, timestamp, temperature, turbidity, turbidity_condition: record.turbidity_condition || derived.turbidity_condition, status: record.status || derived.status }];
+          return [{ ...derived, ...record, timestamp, temperature, turbidity, turbidity_condition: derived.turbidity_condition, status: record.status || derived.status }];
         }).sort((left, right) => left.timestamp - right.timestamp) : [];
         state.historyPage = 1;
         state.historyRenderKey = null;
@@ -818,9 +818,9 @@
         const turbidity = hasTurbidity ? classifyTurbidity(reading.turbidityNTU) : { level: 'no-data', label: 'No Data', condition: 'No Data' };
         const labels = { normal: 'Normal', warning: 'Warning', critical: 'Critical', unknown: 'Range not set', 'no-data': 'No Data' };
         badge(byId('temperature-badge'), labels[temperature.level], temperature.level);
-        badge(byId('turbidity-badge'), labels[turbidity.level], turbidity.level);
+        badge(byId('turbidity-badge'), turbidity.label, turbidity.level);
         byId('temperature-interpretation').textContent = temperature.level === 'no-data' ? 'No Data' : temperature.level === 'normal' ? 'Within configured range' : temperature.level === 'unknown' ? 'Acceptable range not configured' : `Temperature is ${temperature.label.toLowerCase()} of configured range`;
-        byId('turbidity-interpretation').textContent = turbidity.condition;
+        byId('turbidity-interpretation').textContent = turbidity.led ? `${turbidity.condition} · ${turbidity.led} LED` : turbidity.condition;
         setSummary(byId('temperature-summary'), temperature.level, temperature.label);
         setSummary(byId('turbidity-summary'), turbidity.level, turbidity.condition);
         if (!online) {
