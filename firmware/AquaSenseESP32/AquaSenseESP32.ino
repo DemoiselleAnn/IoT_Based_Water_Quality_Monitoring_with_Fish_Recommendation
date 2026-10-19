@@ -2,6 +2,8 @@
 #include <HTTPClient.h>
 #include <OneWire.h>
 #include <DallasTemperature.h>
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
 
 // Wi-Fi and dashboard API. Use your computer's LAN IP, not localhost.
 const char* WIFI_SSID = "YOUR_WIFI_NAME";
@@ -54,6 +56,16 @@ bool buzzerOn = false;
 bool temperatureValid = false;
 bool firstReading = true;
 int currentStatus = -1;
+portMUX_TYPE buzzerMux = portMUX_INITIALIZER_UNLOCKED;
+int requestedStatus = -1;
+unsigned long requestedInterval = NORMAL_BEEP;
+
+void setBuzzerPattern(int status, unsigned long interval) {
+  portENTER_CRITICAL(&buzzerMux);
+  requestedStatus = status;
+  requestedInterval = interval;
+  portEXIT_CRITICAL(&buzzerMux);
+}
 
 void allLEDsOff() {
   digitalWrite(GREEN_LED, LOW);
@@ -74,9 +86,21 @@ void startBeep() {
 }
 
 void updateBuzzer() {
-  if (!temperatureValid) {
+  portENTER_CRITICAL(&buzzerMux);
+  int status = requestedStatus;
+  unsigned long interval = requestedInterval;
+  portEXIT_CRITICAL(&buzzerMux);
+
+  if (status < 0) {
     stopBuzzer();
+    currentStatus = -1;
     return;
+  }
+
+  beepInterval = interval;
+  if (status != currentStatus) {
+    currentStatus = status;
+    startBeep();
   }
 
   unsigned long now = millis();
@@ -90,39 +114,30 @@ void updateBuzzer() {
   }
 }
 
+// Only this task controls the buzzer after setup. Network calls can block
+// the sensor loop for seconds without stretching or delaying the beeps.
+void buzzerTask(void* parameter) {
+  while (true) {
+    updateBuzzer();
+    vTaskDelay(pdMS_TO_TICKS(10));
+  }
+}
+
 String updateTemperature(float temp) {
-  int newStatus;
   String label;
 
   if (temp < TEMP_COLD) {
-    newStatus = 0;
-    beepInterval = COLD_BEEP;
     label = "COLD";
   } else if (temp <= TEMP_NORMAL_MAX) {
-    newStatus = 1;
-    beepInterval = NORMAL_BEEP;
     label = "NORMAL";
   } else if (temp < TEMP_HOT) {
-    newStatus = 2;
-    beepInterval = MODERATE_BEEP;
     label = "MODERATE";
   } else {
-    newStatus = 3;
-    beepInterval = HOT_BEEP;
     label = "HOT";
   }
 
   Serial.print("Status: ");
   Serial.println(label);
-  Serial.print("Buzzer interval: ");
-  Serial.print(beepInterval / 1000);
-  Serial.println(" seconds");
-
-  if (newStatus != currentStatus) {
-    currentStatus = newStatus;
-    startBeep();
-  }
-
   return label;
 }
 
@@ -131,24 +146,32 @@ void updateStatusLEDs(const String& temperatureStatus, const String& turbidityCo
 
   if (temperatureStatus == "HOT" || turbidityCondition == "High") {
     digitalWrite(RED_LED, HIGH);
+    setBuzzerPattern(3, HOT_BEEP);
     Serial.println("LED Status: RED - critical temperature or high turbidity");
+    Serial.println("Buzzer interval: 1 second (200 ms beep)");
     return;
   }
 
   if (temperatureStatus == "MODERATE" || turbidityCondition == "Moderate") {
     digitalWrite(YELLOW_LED, HIGH);
+    setBuzzerPattern(2, MODERATE_BEEP);
     Serial.println("LED Status: YELLOW - warning temperature or moderate turbidity");
+    Serial.println("Buzzer interval: 3 seconds (200 ms beep)");
     return;
   }
 
   if (temperatureStatus == "COLD") {
     digitalWrite(BLUE_LED, HIGH);
+    setBuzzerPattern(0, COLD_BEEP);
     Serial.println("LED Status: BLUE - cold water");
+    Serial.println("Buzzer interval: 4 seconds (200 ms beep)");
     return;
   }
 
   digitalWrite(GREEN_LED, HIGH);
+  setBuzzerPattern(1, NORMAL_BEEP);
   Serial.println("LED Status: GREEN - temperature normal and water clear");
+  Serial.println("Buzzer interval: 5 seconds (200 ms beep)");
 }
 
 void connectWiFi() {
@@ -240,6 +263,10 @@ void setup() {
   allLEDsOff();
   stopBuzzer();
 
+  if (xTaskCreate(buzzerTask, "water-buzzer", 2048, nullptr, 2, nullptr) != pdPASS) {
+    Serial.println("ERROR: Could not start buzzer task. Check ESP32 memory.");
+  }
+
   analogReadResolution(12);
   analogSetPinAttenuation(TURBIDITY_PIN, ADC_11db);
 
@@ -255,8 +282,6 @@ void setup() {
 }
 
 void loop() {
-  updateBuzzer();
-
   unsigned long now = millis();
 
   if (firstReading || now - lastSensorRead >= SENSOR_INTERVAL) {
@@ -277,9 +302,8 @@ void loop() {
     String temperatureStatus = "ERROR";
     if (temp == DEVICE_DISCONNECTED_C || temp < -10 || temp > 85) {
       temperatureValid = false;
-      currentStatus = -1;
       allLEDsOff();
-      stopBuzzer();
+      setBuzzerPattern(-1, NORMAL_BEEP);
       Serial.println("ERROR: DS18B20 NOT DETECTED!");
     } else {
       temperatureValid = true;
