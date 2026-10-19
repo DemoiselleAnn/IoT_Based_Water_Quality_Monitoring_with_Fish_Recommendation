@@ -39,16 +39,17 @@ The ESP32 chooses the LED color after reading both temperature and turbidity:
 The default fish water temperature range is `20-30°C`, with `25°C` as the ideal target.
 Temperatures above `30°C` and below `35°C` are moderate; `35°C` and above are hot.
 
-The active buzzer follows the combined LED status: red beeps every 1 second,
-yellow every 2 seconds, blue every 3 seconds, and green every 4 seconds. Each
+The active buzzer sounds only for blue and red LEDs: red beeps every 1 second
+and blue every 3 seconds. Green and yellow are silent, and switching to either
+stops any active beep. Each
 beep lasts 200 milliseconds; intervals are measured from beep start to beep
-start. A status change starts a beep immediately. High turbidity selects the
+start. Switching to blue or red starts a beep immediately. High turbidity selects the
 red pattern even when the temperature is cold or normal. A separate ESP32 task
 keeps the buzzer running during Wi-Fi retries and slow dashboard requests.
 An invalid or disconnected temperature sensor silences the buzzer, as before.
 Upload the updated sketch to the ESP32 for firmware changes to take effect.
 At startup, Serial Monitor at `115200` baud must show
-`Buzzer control: LED-synced task (R=1s Y=2s B=3s G=4s)`.
+`Buzzer control: BLUE=3s RED=1s GREEN/YELLOW=OFF`.
 If this message is absent, check that the updated sketch was uploaded to the
 correct board and port.
 

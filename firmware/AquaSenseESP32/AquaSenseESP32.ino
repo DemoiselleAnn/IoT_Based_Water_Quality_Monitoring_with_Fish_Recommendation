@@ -33,8 +33,6 @@ const float TEMP_NORMAL_MAX = 30.0;
 const float TEMP_HOT = 35.0;
 
 const unsigned long COLD_BEEP = 3000;
-const unsigned long NORMAL_BEEP = 4000;
-const unsigned long MODERATE_BEEP = 2000;
 const unsigned long HOT_BEEP = 1000;
 
 const unsigned long BEEP_DURATION = 200;
@@ -50,7 +48,7 @@ const float CLOUDY_WATER_VOLTAGE = 0.80;
 
 unsigned long lastSensorRead = 0;
 unsigned long lastBeepStart = 0;
-unsigned long beepInterval = NORMAL_BEEP;
+unsigned long beepInterval = 0;
 
 bool buzzerOn = false;
 bool temperatureValid = false;
@@ -58,7 +56,7 @@ bool firstReading = true;
 int currentStatus = -1;
 portMUX_TYPE buzzerMux = portMUX_INITIALIZER_UNLOCKED;
 int requestedStatus = -1;
-unsigned long requestedInterval = NORMAL_BEEP;
+unsigned long requestedInterval = 0;
 
 void setBuzzerPattern(int status, unsigned long interval) {
   portENTER_CRITICAL(&buzzerMux);
@@ -91,9 +89,10 @@ void updateBuzzer() {
   unsigned long interval = requestedInterval;
   portEXIT_CRITICAL(&buzzerMux);
 
-  if (status < 0) {
+  // Zero interval means silent (green/yellow), including during an active beep.
+  if (status < 0 || interval == 0) {
     stopBuzzer();
-    currentStatus = -1;
+    currentStatus = status;
     return;
   }
 
@@ -154,9 +153,9 @@ void updateStatusLEDs(const String& temperatureStatus, const String& turbidityCo
 
   if (temperatureStatus == "MODERATE" || turbidityCondition == "Moderate") {
     digitalWrite(YELLOW_LED, HIGH);
-    setBuzzerPattern(2, MODERATE_BEEP);
+    setBuzzerPattern(2, 0);
     Serial.println("LED Status: YELLOW - warning temperature or moderate turbidity");
-    Serial.println("Buzzer interval: 2 seconds (200 ms beep)");
+    Serial.println("Buzzer: OFF (yellow)");
     return;
   }
 
@@ -169,9 +168,9 @@ void updateStatusLEDs(const String& temperatureStatus, const String& turbidityCo
   }
 
   digitalWrite(GREEN_LED, HIGH);
-  setBuzzerPattern(1, NORMAL_BEEP);
+  setBuzzerPattern(1, 0);
   Serial.println("LED Status: GREEN - temperature normal and water clear");
-  Serial.println("Buzzer interval: 4 seconds (200 ms beep)");
+  Serial.println("Buzzer: OFF (green)");
 }
 
 void connectWiFi() {
@@ -276,7 +275,7 @@ void setup() {
 
   Serial.println("========================");
   Serial.println("FISH FARM WATER MONITOR");
-  Serial.println("Buzzer control: LED-synced task (R=1s Y=2s B=3s G=4s)");
+  Serial.println("Buzzer control: BLUE=3s RED=1s GREEN/YELLOW=OFF");
   Serial.println("========================");
 
   connectWiFi();
@@ -304,7 +303,7 @@ void loop() {
     if (temp == DEVICE_DISCONNECTED_C || temp < -10 || temp > 85) {
       temperatureValid = false;
       allLEDsOff();
-      setBuzzerPattern(-1, NORMAL_BEEP);
+      setBuzzerPattern(-1, 0);
       Serial.println("ERROR: DS18B20 NOT DETECTED!");
     } else {
       temperatureValid = true;
