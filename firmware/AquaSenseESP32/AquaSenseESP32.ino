@@ -30,11 +30,11 @@ DallasTemperature sensors(&oneWire);
 const float TEMP_COLD = 20.0;
 const float TEMP_IDEAL = 25.0;
 const float TEMP_NORMAL_MAX = 30.0;
-const float TEMP_HOT = 30.0;
+const float TEMP_HOT = 35.0;
 
-const unsigned long COLD_BEEP = 4000;
-const unsigned long NORMAL_BEEP = 5000;
-const unsigned long MODERATE_BEEP = 3000;
+const unsigned long COLD_BEEP = 3000;
+const unsigned long NORMAL_BEEP = 4000;
+const unsigned long MODERATE_BEEP = 2000;
 const unsigned long HOT_BEEP = 1000;
 
 const unsigned long BEEP_DURATION = 200;
@@ -156,7 +156,7 @@ void updateStatusLEDs(const String& temperatureStatus, const String& turbidityCo
     digitalWrite(YELLOW_LED, HIGH);
     setBuzzerPattern(2, MODERATE_BEEP);
     Serial.println("LED Status: YELLOW - warning temperature or moderate turbidity");
-    Serial.println("Buzzer interval: 3 seconds (200 ms beep)");
+    Serial.println("Buzzer interval: 2 seconds (200 ms beep)");
     return;
   }
 
@@ -164,14 +164,14 @@ void updateStatusLEDs(const String& temperatureStatus, const String& turbidityCo
     digitalWrite(BLUE_LED, HIGH);
     setBuzzerPattern(0, COLD_BEEP);
     Serial.println("LED Status: BLUE - cold water");
-    Serial.println("Buzzer interval: 4 seconds (200 ms beep)");
+    Serial.println("Buzzer interval: 3 seconds (200 ms beep)");
     return;
   }
 
   digitalWrite(GREEN_LED, HIGH);
   setBuzzerPattern(1, NORMAL_BEEP);
   Serial.println("LED Status: GREEN - temperature normal and water clear");
-  Serial.println("Buzzer interval: 5 seconds (200 ms beep)");
+  Serial.println("Buzzer interval: 4 seconds (200 ms beep)");
 }
 
 void connectWiFi() {
@@ -276,6 +276,7 @@ void setup() {
 
   Serial.println("========================");
   Serial.println("FISH FARM WATER MONITOR");
+  Serial.println("Buzzer control: LED-synced task (R=1s Y=2s B=3s G=4s)");
   Serial.println("========================");
 
   connectWiFi();
