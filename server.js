@@ -116,12 +116,12 @@ const server = http.createServer(async (req, res) => {
         turbidityRangeNTU: { clearMax: 25, moderateMax: 65 },
         turbidityUnit: 'NTU',
         fishSpecies: [
-          { name: 'Guppy', preferredTemperature: { min: 22, max: 28 }, preferredTurbidity: { conditions: ['Clear'] }, description: 'A small, colorful freshwater aquarium fish.' },
+          { name: 'Guppy', preferredTemperature: { min: 22, max: 30 }, preferredTurbidity: { conditions: ['Clear'] }, description: 'A small, colorful freshwater aquarium fish.' },
           { name: 'Molly', preferredTemperature: { min: 24, max: 28 }, preferredTurbidity: { conditions: ['Clear'] }, description: 'A peaceful livebearing freshwater aquarium fish.' },
           { name: 'Betta', preferredTemperature: { min: 24, max: 28 }, preferredTurbidity: { conditions: ['Clear'] }, description: 'A freshwater fish known for its flowing fins.' },
           { name: 'Platy', preferredTemperature: { min: 21, max: 28 }, preferredTurbidity: { conditions: ['Clear'] }, description: 'A small, active livebearing freshwater fish.' },
           { name: 'Neon Tetra', preferredTemperature: { min: 21, max: 28 }, preferredTurbidity: { conditions: ['Clear'] }, description: 'A small schooling freshwater aquarium fish.' },
-          { name: 'Swordtail', preferredTemperature: { min: 22, max: 28 }, preferredTurbidity: { conditions: ['Clear'] }, description: 'An active livebearing freshwater aquarium fish.' }
+          { name: 'Swordtail', preferredTemperature: { min: 22, max: 30 }, preferredTurbidity: { conditions: ['Clear'] }, description: 'An active livebearing freshwater aquarium fish.' }
         ]
       };
       send(res, 200, `window.AQUASENSE_DEMO_MODE = false;\nwindow.AQUASENSE_CONFIG = ${JSON.stringify(config, null, 2)};\n`, 'text/javascript; charset=utf-8');
