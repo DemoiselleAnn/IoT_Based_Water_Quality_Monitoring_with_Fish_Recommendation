@@ -2,6 +2,10 @@
 
 AquaSense is a local dashboard for an ESP32 with a DS18B20 water temperature sensor and an analog turbidity sensor. The ESP32 posts readings over Wi-Fi, and the dashboard shows live status, history, alerts, and basic fish compatibility recommendations.
 
+The firmware treats an ADC reading at or above `4090` as a disconnected
+turbidity sensor. It reports the sensor error, leaves the turbidity LEDs off,
+and skips the dashboard POST until a valid turbidity reading is available.
+
 ## Hardware
 
 - ESP32 development board

@@ -46,6 +46,7 @@ const unsigned long SENSOR_INTERVAL = 5000;
 const int TURBIDITY_SAMPLES = 20;
 const float ADC_REFERENCE_VOLTAGE = 3.3;
 const int ADC_MAX = 4095;
+const int TURBIDITY_DISCONNECTED_RAW = 4090;
 
 // Calibrate these two values using clean water and very cloudy water.
 const float CLEAR_WATER_VOLTAGE = 2.70;
@@ -241,6 +242,12 @@ String classifyTurbidity(float ntu) {
   return "High";
 }
 
+bool turbiditySensorConnected(int rawValue) {
+  // An unplugged analog input in this setup is pulled to the ADC rail.
+  // Treat the rail value as missing instead of reporting false clear water.
+  return rawValue < TURBIDITY_DISCONNECTED_RAW;
+}
+
 void postReading(float temperatureC, int turbidityRaw, float turbidityVoltage, float turbidityNTU, const String& temperatureStatus, const String& turbidityCondition) {
   if (WiFi.status() != WL_CONNECTED) {
     connectWiFi();
@@ -336,23 +343,32 @@ void loop() {
     }
 
     int turbidityRaw = readTurbidityRaw();
+    bool turbidityValid = turbiditySensorConnected(turbidityRaw);
     float turbidityVoltage = rawToVoltage(turbidityRaw);
-    float turbidityNTU = voltageToNtu(turbidityVoltage);
-    String turbidityCondition = classifyTurbidity(turbidityNTU);
+    float turbidityNTU = turbidityValid ? voltageToNtu(turbidityVoltage) : 0.0;
+    String turbidityCondition = turbidityValid ? classifyTurbidity(turbidityNTU) : "ERROR";
 
     Serial.print("Turbidity ADC: ");
     Serial.println(turbidityRaw);
     Serial.print("Turbidity voltage: ");
     Serial.println(turbidityVoltage, 3);
-    Serial.print("Estimated turbidity: ");
-    Serial.print(turbidityNTU, 1);
-    Serial.println(" NTU");
-    Serial.print("Water Clarity: ");
-    Serial.println(turbidityCondition);
+    if (turbidityValid) {
+      Serial.print("Estimated turbidity: ");
+      Serial.print(turbidityNTU, 1);
+      Serial.println(" NTU");
+      Serial.print("Water Clarity: ");
+      Serial.println(turbidityCondition);
+    } else {
+      Serial.println("ERROR: TURBIDITY SENSOR NOT DETECTED!");
+    }
 
     if (temperatureValid) {
       updateStatusLEDs(temperatureStatus, turbidityCondition);
-      postReading(temp, turbidityRaw, turbidityVoltage, turbidityNTU, temperatureStatus, turbidityCondition);
+      if (turbidityValid) {
+        postReading(temp, turbidityRaw, turbidityVoltage, turbidityNTU, temperatureStatus, turbidityCondition);
+      } else {
+        Serial.println("Dashboard POST skipped: waiting for turbidity sensor");
+      }
     }
 
     Serial.println("-------------------------");
