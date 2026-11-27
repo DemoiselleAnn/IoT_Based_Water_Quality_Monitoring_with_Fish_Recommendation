@@ -10,3 +10,4 @@ service-account*.json
 node_modules/
 .codex/
 .aws/
+aquasense-settings.json

@@ -24,6 +24,7 @@
         <a class="nav-link" href="#fish-recommendations" aria-label="Fish Recommendation" title="Fish Recommendation"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12s3.2-5.5 9-5.5 9 5.5 9 5.5-3.2 5.5-9 5.5S3 12 3 12Z"/><path d="m3 12-2.2-3v6L3 12Zm9-1.5h.01"/><circle cx="16.5" cy="10" r=".7" fill="currentColor"/></svg><span>Fish Recommendation</span></a>
         <a class="nav-link" href="#history" data-page="History" aria-label="History" title="History"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3.1 11a9 9 0 1 1 .5 5.2"/><path d="M3 4v6h6M12 7v5l3 2"/></svg><span>History</span></a>
         <a class="nav-link" href="#alerts" data-page="Alerts" aria-label="Alerts" title="Alerts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg><span>Alerts</span><span class="nav-badge" id="alert-count" hidden>0</span></a>
+        <a class="nav-link" href="#admin-settings" data-page="Admin" aria-label="Admin Settings" title="Admin Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/><circle cx="12" cy="12" r="4"/></svg><span>Admin Settings</span></a>
       </nav>
       <div class="nav-spacer"></div>
       <div class="nav-bottom">
@@ -185,6 +186,16 @@
           </form>
         </section>
       </main>
+      <main class="content routed-view" id="admin-settings-page" hidden>
+        <section aria-labelledby="admin-settings-title">
+          <div class="monitoring-heading"><div><h1 id="admin-settings-title">Admin Settings</h1><p>Adjust water-quality limits without changing the ESP32 firmware.</p></div></div>
+          <form class="account-card account-body settings-form" id="settings-form" novalidate>
+            <div class="settings-section"><h2>Temperature limits</h2><p class="account-intro">Normal readings sit between the normal minimum and maximum. Critical limits control alerts.</p><div class="account-fields"><div><label for="temperature-critical-min">CRITICAL MINIMUM °C</label><input id="temperature-critical-min" type="number" step="0.1" required></div><div><label for="temperature-normal-min">NORMAL MINIMUM °C</label><input id="temperature-normal-min" type="number" step="0.1" required></div><div><label for="temperature-ideal">IDEAL °C</label><input id="temperature-ideal" type="number" step="0.1" required></div><div><label for="temperature-normal-max">NORMAL MAXIMUM °C</label><input id="temperature-normal-max" type="number" step="0.1" required></div><div><label for="temperature-critical-max">CRITICAL MAXIMUM °C</label><input id="temperature-critical-max" type="number" step="0.1" required></div></div></div>
+            <div class="settings-section"><h2>Turbidity limits</h2><p class="account-intro">These values classify the sensor’s NTU reading as clear, cloudy/moderate, or dirty/high.</p><div class="account-fields"><div><label for="turbidity-clear-max">CLEAR UP TO NTU</label><input id="turbidity-clear-max" type="number" step="0.1" min="0" required></div><div><label for="turbidity-moderate-max">MODERATE UP TO NTU</label><input id="turbidity-moderate-max" type="number" step="0.1" min="0" required></div></div></div>
+            <p class="account-error" id="settings-error" role="alert"></p><p id="settings-message" role="status"></p><div class="account-actions"><button class="account-primary" type="submit">Save Settings</button><button class="account-secondary" id="reset-settings" type="button">Reset Defaults</button></div>
+          </form>
+        </section>
+      </main>
       <main class="content routed-view" id="login-page" hidden><h1>Login</h1><p class="account-intro">Sign in to AquaSense.</p><form class="account-card account-body" id="login-form" novalidate><label for="login-email">EMAIL</label><input id="login-email" type="email" autocomplete="username"><label for="login-password">PASSWORD</label><input id="login-password" type="password" autocomplete="current-password"><p class="account-error" id="login-error" role="alert"></p><div class="login-actions"><button class="account-primary" type="submit">Login</button><button class="account-secondary" id="use-demo-login" type="button">Use demo account</button></div><p class="account-intro">Development account: jamie.delacruz@email.com / AquaSense123!</p></form></main>
     </div>
   </div>
@@ -217,7 +228,7 @@
       const pollIntervalMs = 2000;
       const demoMode = window.AQUASENSE_DEMO_MODE !== false;
       const demoConfig = {
-        temperatureRangeC: { min: 20, max: 30, ideal: 25, criticalMin: 20, criticalMax: 30 },
+        temperatureRangeC: { min: 20, max: 30, ideal: 25, criticalMin: 20, criticalMax: 35 },
         turbidityRangeNTU: { clearMax: 25, moderateMax: 65 },
         turbidityUnit: 'NTU',
         temperatureTrendC: [27.0, 27.2, 27.1, 27.5, 27.3, 27.4],
@@ -915,6 +926,38 @@
         if (!response.ok) throw new Error(`Request failed: ${response.status}`);
         return response.json();
       };
+      const settingsDefaults = { temperatureRangeC: { min: 20, max: 30, ideal: 25, criticalMin: 20, criticalMax: 35 }, turbidityRangeNTU: { clearMax: 25, moderateMax: 65 } };
+      const settingsFieldIds = ['temperature-critical-min', 'temperature-normal-min', 'temperature-ideal', 'temperature-normal-max', 'temperature-critical-max', 'turbidity-clear-max', 'turbidity-moderate-max'];
+      const renderSettingsForm = (next = config) => {
+        const temperature = next.temperatureRangeC || settingsDefaults.temperatureRangeC;
+        const turbidity = next.turbidityRangeNTU || settingsDefaults.turbidityRangeNTU;
+        const values = { 'temperature-critical-min': temperature.criticalMin, 'temperature-normal-min': temperature.min, 'temperature-ideal': temperature.ideal, 'temperature-normal-max': temperature.max, 'temperature-critical-max': temperature.criticalMax, 'turbidity-clear-max': turbidity.clearMax, 'turbidity-moderate-max': turbidity.moderateMax };
+        settingsFieldIds.forEach((id) => { byId(id).value = values[id]; });
+      };
+      const readSettingsForm = () => ({
+        temperatureRangeC: { criticalMin: Number(byId('temperature-critical-min').value), min: Number(byId('temperature-normal-min').value), ideal: Number(byId('temperature-ideal').value), max: Number(byId('temperature-normal-max').value), criticalMax: Number(byId('temperature-critical-max').value) },
+        turbidityRangeNTU: { clearMax: Number(byId('turbidity-clear-max').value), moderateMax: Number(byId('turbidity-moderate-max').value) }
+      });
+      byId('settings-form').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        byId('settings-error').textContent = '';
+        byId('settings-message').textContent = '';
+        const next = readSettingsForm();
+        const temperature = next.temperatureRangeC, turbidity = next.turbidityRangeNTU;
+        if ([...settingsFieldIds].some((id) => !Number.isFinite(Number(byId(id).value))) || !(temperature.criticalMin <= temperature.min && temperature.min <= temperature.ideal && temperature.ideal <= temperature.max && temperature.max < temperature.criticalMax) || !(turbidity.clearMax >= 0 && turbidity.clearMax < turbidity.moderateMax)) {
+          byId('settings-error').textContent = 'Check the limits: temperature must be ordered from critical minimum through critical maximum, and clear turbidity must be below moderate.';
+          return;
+        }
+        try {
+          const saved = await fetch(`${apiBase}/api/settings`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(next) });
+          const result = await saved.json();
+          if (!saved.ok) throw new Error(result.error || 'Unable to save settings.');
+          Object.assign(config, result.settings);
+          window.aquaSenseConfigure(result.settings);
+          byId('settings-message').textContent = 'Settings saved. Dashboard classifications updated.';
+        } catch (error) { byId('settings-error').textContent = error.message; }
+      });
+      byId('reset-settings').addEventListener('click', () => { renderSettingsForm(settingsDefaults); byId('settings-error').textContent = ''; byId('settings-message').textContent = 'Defaults loaded into the form. Save to apply them.'; });
       const pollSensorApi = async () => {
         try {
           const reading = await apiJson('/api/reading');
@@ -994,6 +1037,7 @@
           else location.hash = '#history';
         }
         else if (page === 'Alerts') return;
+        else if (page === 'Admin') location.hash = '#admin-settings';
         else if (page === 'Profile') location.hash = '#profile';
         else if (page === 'Logout') window.aquaSenseAccount.confirmLogout();
       }));
@@ -1006,7 +1050,8 @@
         const recommendations = route === '#fish-recommendations';
         const history = route === '#history';
         const alerts = route === '#alerts';
-        byId('dashboard').hidden = monitoring || recommendations || history || alerts || profile || login;
+        const admin = route === '#admin-settings';
+        byId('dashboard').hidden = monitoring || recommendations || history || alerts || profile || admin || login;
         byId('profile-page').hidden = !profile;
         byId('login-page').hidden = !login;
         byId('profile-button').hidden = login;
@@ -1014,10 +1059,12 @@
         byId('fish-recommendations-page').hidden = !recommendations;
         byId('history-page').hidden = !history;
         byId('alerts-page').hidden = !alerts;
-        byId('topbar-title').textContent = profile ? 'Profile' : login ? 'Login' : monitoring ? 'Monitoring' : recommendations ? 'Fish Recommendation' : history ? 'History' : alerts ? 'Alerts' : 'Dashboard';
+        byId('admin-settings-page').hidden = !admin;
+        byId('topbar-title').textContent = profile ? 'Profile' : login ? 'Login' : monitoring ? 'Monitoring' : recommendations ? 'Fish Recommendation' : history ? 'History' : alerts ? 'Alerts' : admin ? 'Admin Settings' : 'Dashboard';
         document.querySelectorAll('.nav-link').forEach((link) => link.classList.remove('active'));
-        const activeHref = profile ? '#profile' : login ? '#login' : monitoring ? '#monitoring' : recommendations ? '#fish-recommendations' : history ? '#history' : alerts ? '#alerts' : '#dashboard';
+        const activeHref = profile ? '#profile' : login ? '#login' : monitoring ? '#monitoring' : recommendations ? '#fish-recommendations' : history ? '#history' : alerts ? '#alerts' : admin ? '#admin-settings' : '#dashboard';
         document.querySelector(`.nav-link[href="${activeHref}"]`)?.classList.add('active');
+        if (admin) renderSettingsForm();
         if (history) renderHistory();
         if (alerts) {
           state.unreadAlerts = 0;

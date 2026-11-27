@@ -77,6 +77,16 @@ npm start
 
 Open `http://localhost:3000` on the computer running the server.
 
+## Admin Settings
+
+Sign in to the dashboard and open **Admin Settings**. You can change the
+normal and critical temperature limits plus the clear and moderate turbidity
+limits. Save the form to apply the values immediately to the dashboard,
+alerts, and fish recommendations. The server stores these local settings in
+`aquasense-settings.json`; the file is created automatically and is excluded
+from Git. The ESP32 continues to send raw sensor readings, so no firmware
+change or re-upload is needed when thresholds change.
+
 Find your computer LAN IP address:
 
 ```powershell

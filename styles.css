@@ -561,7 +561,7 @@
 
 /* Basic account management, using the existing AquaSense palette. */
 [hidden] { display: none !important; }
-#profile-page h1, #login-page h1 { margin: 0; font-size: 28px; }
+#profile-page h1, #admin-settings-page h1, #login-page h1 { margin: 0; font-size: 28px; }
 .account-intro { color: var(--muted); margin: 10px 0 28px; font-size: 14px; }
 .account-card { max-width: 1060px; border: 1px solid var(--line); border-radius: 18px; overflow: hidden; background: white; box-shadow: var(--shadow); }
 .account-hero { display: flex; align-items: center; gap: 18px; padding: 30px; background: linear-gradient(100deg, #eefafa, #f5fafb); }
@@ -586,4 +586,10 @@
 .password-input button { border: 0; background: transparent; color: var(--teal); cursor: pointer; font-size: 12px; }
 #login-form { max-width: 460px; }
 #login-form label:not(:first-child) { margin-top: 20px; }
+.settings-form { max-width: 900px; }
+.settings-section + .settings-section { margin-top: 30px; padding-top: 28px; border-top: 1px solid var(--line); }
+.settings-section h2 { margin: 0 0 6px; font-size: 17px; }
+.settings-section .account-intro { margin: 0 0 20px; }
+#settings-message { margin: 16px 0 0; color: var(--teal); font-size: 13px; }
+#settings-message:empty { display: none; }
 @media (max-width: 640px) { .account-fields { grid-template-columns: 1fr; } .account-hero, .account-body { padding: 22px; } .account-hero h2 { font-size: 19px; } }

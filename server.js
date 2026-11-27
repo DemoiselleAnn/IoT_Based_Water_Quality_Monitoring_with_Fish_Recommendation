@@ -7,6 +7,43 @@ const port = Number(process.env.PORT || 3000);
 const root = __dirname;
 const maxHistory = 1000;
 const readings = [];
+const settingsPath = path.join(root, 'aquasense-settings.json');
+
+const defaultConfig = {
+  temperatureRangeC: { min: 20, max: 30, ideal: 25, criticalMin: 20, criticalMax: 35 },
+  turbidityRangeNTU: { clearMax: 25, moderateMax: 65 }
+};
+
+const loadSettings = () => {
+  try {
+    const saved = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
+    return {
+      temperatureRangeC: { ...defaultConfig.temperatureRangeC, ...(saved.temperatureRangeC || {}) },
+      turbidityRangeNTU: { ...defaultConfig.turbidityRangeNTU, ...(saved.turbidityRangeNTU || {}) }
+    };
+  } catch {
+    return JSON.parse(JSON.stringify(defaultConfig));
+  }
+};
+
+let settings = loadSettings();
+
+const validateSettings = (payload) => {
+  const temperature = payload.temperatureRangeC || {};
+  const turbidity = payload.turbidityRangeNTU || {};
+  const values = [temperature.min, temperature.max, temperature.ideal, temperature.criticalMin, temperature.criticalMax, turbidity.clearMax, turbidity.moderateMax].map(Number);
+  if (values.some((value) => !Number.isFinite(value))) throw Object.assign(new Error('All settings must be valid numbers.'), { status: 400 });
+  const [min, max, ideal, criticalMin, criticalMax, clearMax, moderateMax] = values;
+  if (!(criticalMin <= min && min <= ideal && ideal <= max && max < criticalMax)) throw Object.assign(new Error('Temperature limits must follow critical minimum ≤ normal minimum ≤ ideal ≤ normal maximum < critical maximum.'), { status: 400 });
+  if (!(clearMax >= 0 && clearMax < moderateMax)) throw Object.assign(new Error('Turbidity limits must be zero or higher, with clear below moderate.'), { status: 400 });
+  return { temperatureRangeC: { min, max, ideal, criticalMin, criticalMax }, turbidityRangeNTU: { clearMax, moderateMax } };
+};
+
+const saveSettings = (payload) => {
+  settings = validateSettings(payload);
+  fs.writeFileSync(settingsPath, `${JSON.stringify(settings, null, 2)}\n`, 'utf8');
+  return settings;
+};
 
 const contentTypes = {
   '.css': 'text/css; charset=utf-8',
@@ -112,8 +149,7 @@ const server = http.createServer(async (req, res) => {
     if (req.method === 'GET' && url.pathname === '/config.js') {
       const config = {
         apiBaseUrl: '',
-        temperatureRangeC: { min: 20, max: 30, ideal: 25, criticalMin: 20, criticalMax: 30 },
-        turbidityRangeNTU: { clearMax: 25, moderateMax: 65 },
+        ...settings,
         turbidityUnit: 'NTU',
         fishSpecies: [
           { name: 'Guppy', preferredTemperature: { min: 22, max: 30 }, preferredTurbidity: { conditions: ['Clear'] }, description: 'A small, colorful freshwater aquarium fish.' },
@@ -125,6 +161,17 @@ const server = http.createServer(async (req, res) => {
         ]
       };
       send(res, 200, `window.AQUASENSE_DEMO_MODE = false;\nwindow.AQUASENSE_CONFIG = ${JSON.stringify(config, null, 2)};\n`, 'text/javascript; charset=utf-8');
+      return;
+    }
+
+    if (req.method === 'GET' && url.pathname === '/api/settings') {
+      send(res, 200, JSON.stringify(settings));
+      return;
+    }
+
+    if (req.method === 'PUT' && url.pathname === '/api/settings') {
+      const payload = JSON.parse(await readBody(req) || '{}');
+      send(res, 200, JSON.stringify({ ok: true, settings: saveSettings(payload) }));
       return;
     }
 
