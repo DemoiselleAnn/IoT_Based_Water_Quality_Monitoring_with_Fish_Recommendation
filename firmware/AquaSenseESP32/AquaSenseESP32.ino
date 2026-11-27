@@ -21,6 +21,11 @@ const char* DEVICE_ID = "aquasense-esp32";
 #define RED_LED 18
 #define BLUE_LED 19
 
+// Separate turbidity indicator LEDs
+#define TURBIDITY_GREEN_LED 25
+#define TURBIDITY_YELLOW_LED 26
+#define TURBIDITY_RED_LED 27
+
 // Active buzzer
 #define BUZZER_PIN 23
 
@@ -70,6 +75,9 @@ void allLEDsOff() {
   digitalWrite(YELLOW_LED, LOW);
   digitalWrite(RED_LED, LOW);
   digitalWrite(BLUE_LED, LOW);
+  digitalWrite(TURBIDITY_GREEN_LED, LOW);
+  digitalWrite(TURBIDITY_YELLOW_LED, LOW);
+  digitalWrite(TURBIDITY_RED_LED, LOW);
 }
 
 void stopBuzzer() {
@@ -143,34 +151,40 @@ String updateTemperature(float temp) {
 void updateStatusLEDs(const String& temperatureStatus, const String& turbidityCondition) {
   allLEDsOff();
 
-  if (temperatureStatus == "HOT" || turbidityCondition == "High") {
+  // Temperature LEDs are controlled only by the water temperature.
+  if (temperatureStatus == "HOT") {
     digitalWrite(RED_LED, HIGH);
     setBuzzerPattern(3, HOT_BEEP);
-    Serial.println("LED Status: RED - critical temperature or high turbidity");
+    Serial.println("Temperature LED: RED - hot water");
     Serial.println("Buzzer interval: 1 second (200 ms beep)");
-    return;
-  }
-
-  if (temperatureStatus == "MODERATE" || turbidityCondition == "Moderate") {
+  } else if (temperatureStatus == "MODERATE") {
     digitalWrite(YELLOW_LED, HIGH);
     setBuzzerPattern(2, 0);
-    Serial.println("LED Status: YELLOW - warning temperature or moderate turbidity");
-    Serial.println("Buzzer: OFF (yellow)");
-    return;
-  }
-
-  if (temperatureStatus == "COLD") {
+    Serial.println("Temperature LED: YELLOW - moderate temperature");
+    Serial.println("Buzzer: OFF (moderate temperature)");
+  } else if (temperatureStatus == "COLD") {
     digitalWrite(BLUE_LED, HIGH);
     setBuzzerPattern(0, COLD_BEEP);
-    Serial.println("LED Status: BLUE - cold water");
+    Serial.println("Temperature LED: BLUE - cold water");
     Serial.println("Buzzer interval: 3 seconds (200 ms beep)");
-    return;
+  } else {
+    digitalWrite(GREEN_LED, HIGH);
+    setBuzzerPattern(1, 0);
+    Serial.println("Temperature LED: GREEN - normal temperature");
+    Serial.println("Buzzer: OFF (normal temperature)");
   }
 
-  digitalWrite(GREEN_LED, HIGH);
-  setBuzzerPattern(1, 0);
-  Serial.println("LED Status: GREEN - temperature normal and water clear");
-  Serial.println("Buzzer: OFF (green)");
+  // Turbidity LEDs are controlled only by the water clarity classification.
+  if (turbidityCondition == "High") {
+    digitalWrite(TURBIDITY_RED_LED, HIGH);
+    Serial.println("Turbidity LED: RED - dirty water");
+  } else if (turbidityCondition == "Moderate") {
+    digitalWrite(TURBIDITY_YELLOW_LED, HIGH);
+    Serial.println("Turbidity LED: YELLOW - cloudy/moderate water");
+  } else if (turbidityCondition == "Clear") {
+    digitalWrite(TURBIDITY_GREEN_LED, HIGH);
+    Serial.println("Turbidity LED: GREEN - clean/clear water");
+  }
 }
 
 void connectWiFi() {
@@ -257,6 +271,9 @@ void setup() {
   pinMode(YELLOW_LED, OUTPUT);
   pinMode(RED_LED, OUTPUT);
   pinMode(BLUE_LED, OUTPUT);
+  pinMode(TURBIDITY_GREEN_LED, OUTPUT);
+  pinMode(TURBIDITY_YELLOW_LED, OUTPUT);
+  pinMode(TURBIDITY_RED_LED, OUTPUT);
   pinMode(BUZZER_PIN, OUTPUT);
 
   allLEDsOff();

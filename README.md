@@ -8,7 +8,7 @@ AquaSense is a local dashboard for an ESP32 with a DS18B20 water temperature sen
 - DS18B20 waterproof temperature sensor
 - 4.7k resistor for the DS18B20 data pull-up
 - Analog turbidity sensor module
-- Green, yellow, red, and blue LEDs with resistors
+- Four temperature LEDs and three turbidity LEDs with resistors
 - Active buzzer
 
 ## Default ESP32 Wiring
@@ -21,20 +21,32 @@ AquaSense is a local dashboard for an ESP32 with a DS18B20 water temperature sen
 | Yellow LED | GPIO 17 |
 | Red LED | GPIO 18 |
 | Blue LED | GPIO 19 |
+| Turbidity green (clean/clear) LED | GPIO 25 |
+| Turbidity yellow (cloudy/moderate) LED | GPIO 26 |
+| Turbidity red (dirty/high) LED | GPIO 27 |
 | Active buzzer | GPIO 23 |
 
 Connect all grounds together. Power the DS18B20 from 3.3V and place a 4.7k resistor between DS18B20 data and 3.3V. Make sure the turbidity module analog output is safe for the ESP32 ADC input; use a voltage divider if the module can output above 3.3V.
 
 ## LED Status
 
-The ESP32 chooses the LED color after reading both temperature and turbidity:
+Temperature and turbidity use separate LED groups. The four temperature LEDs
+depend only on temperature:
 
 | LED | Meaning |
 | --- | --- |
-| Green | Temperature is normal and turbidity is clear |
-| Blue | Temperature is cold and turbidity is clear |
-| Yellow | Temperature is moderate or turbidity is moderate |
-| Red | Temperature is hot or turbidity is high |
+| Green | Temperature is normal |
+| Blue | Temperature is cold |
+| Yellow | Temperature is moderate |
+| Red | Temperature is hot |
+
+The three turbidity LEDs depend only on turbidity:
+
+| LED | Meaning |
+| --- | --- |
+| Green | Clean / clear water (`0-25 NTU`) |
+| Yellow | Cloudy / moderate water (above `25` through `65 NTU`) |
+| Red | Dirty / high turbidity (above `65 NTU`) |
 
 The default fish water temperature range is `20-30°C`, with `25°C` as the ideal target.
 Temperatures above `30°C` and below `35°C` are moderate; `35°C` and above are hot.
@@ -109,7 +121,7 @@ Put the probe in clean water, note the voltage printed in Serial Monitor, and se
 - Moderate: above `25` through `65 NTU`, yellow indicator
 - Critical / High Turbidity: above `65 NTU`, red indicator
 
-The dashboard shows the turbidity LED color on both the overview and Live Monitoring cards. The ESP32 uses the same turbidity thresholds (its firmware reports normal water as `Clear`). The physical LED also considers temperature: hot water selects red, moderate temperature selects yellow, and cold water with normal turbidity selects blue.
+The dashboard shows the turbidity LED color on both the overview and Live Monitoring cards. The ESP32 uses the same turbidity thresholds (its firmware reports normal water as `Clear`). The physical temperature LEDs and turbidity LEDs operate independently, so a hot and dirty reading lights both temperature red and turbidity red.
 
 ## API
 
