@@ -5,6 +5,9 @@ AquaSense is a local dashboard for an ESP32 with a DS18B20 water temperature sen
 The firmware treats an ADC reading at or above `4090` as a disconnected
 turbidity sensor. It reports the sensor error, leaves the turbidity LEDs off,
 and skips the dashboard POST until a valid turbidity reading is available.
+The temperature and turbidity sensors are independent: if the DS18B20 is
+disconnected but the turbidity sensor is valid, the ESP32 posts the turbidity
+reading and the dashboard shows temperature as unavailable.
 
 ## Hardware
 

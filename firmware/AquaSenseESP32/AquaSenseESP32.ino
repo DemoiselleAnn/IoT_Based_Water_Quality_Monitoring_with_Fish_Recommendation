@@ -162,9 +162,12 @@ void updateStatusLEDs(const String& temperatureStatus, const String& turbidityCo
   } else if (temperatureStatus == "COLD") {
     digitalWrite(BLUE_LED, HIGH);
     Serial.println("Temperature LED: BLUE - cold water");
-  } else {
+  } else if (temperatureStatus == "NORMAL") {
     digitalWrite(GREEN_LED, HIGH);
     Serial.println("Temperature LED: GREEN - normal temperature");
+  } else {
+    setBuzzerPattern(1, 0);
+    Serial.println("Temperature LEDs: OFF - temperature sensor unavailable");
   }
 
   // Turbidity LEDs are controlled only by the water clarity classification.
@@ -248,7 +251,7 @@ bool turbiditySensorConnected(int rawValue) {
   return rawValue < TURBIDITY_DISCONNECTED_RAW;
 }
 
-void postReading(float temperatureC, int turbidityRaw, float turbidityVoltage, float turbidityNTU, const String& temperatureStatus, const String& turbidityCondition) {
+void postReading(bool includeTemperature, float temperatureC, int turbidityRaw, float turbidityVoltage, float turbidityNTU, const String& temperatureStatus, const String& turbidityCondition) {
   if (WiFi.status() != WL_CONNECTED) {
     connectWiFi();
     if (WiFi.status() != WL_CONNECTED) return;
@@ -260,11 +263,13 @@ void postReading(float temperatureC, int turbidityRaw, float turbidityVoltage, f
 
   String payload = "{";
   payload += "\"deviceId\":\"" + String(DEVICE_ID) + "\",";
-  payload += "\"temperatureC\":" + String(temperatureC, 2) + ",";
+  if (includeTemperature) {
+    payload += "\"temperatureC\":" + String(temperatureC, 2) + ",";
+    payload += "\"temperatureStatus\":\"" + temperatureStatus + "\",";
+  }
   payload += "\"turbidityRaw\":" + String(turbidityRaw) + ",";
   payload += "\"turbidityVoltage\":" + String(turbidityVoltage, 3) + ",";
   payload += "\"turbidityNTU\":" + String(turbidityNTU, 1) + ",";
-  payload += "\"temperatureStatus\":\"" + temperatureStatus + "\",";
   payload += "\"turbidityCondition\":\"" + turbidityCondition + "\"";
   payload += "}";
 
@@ -362,13 +367,11 @@ void loop() {
       Serial.println("ERROR: TURBIDITY SENSOR NOT DETECTED!");
     }
 
-    if (temperatureValid) {
-      updateStatusLEDs(temperatureStatus, turbidityCondition);
-      if (turbidityValid) {
-        postReading(temp, turbidityRaw, turbidityVoltage, turbidityNTU, temperatureStatus, turbidityCondition);
-      } else {
-        Serial.println("Dashboard POST skipped: waiting for turbidity sensor");
-      }
+    updateStatusLEDs(temperatureStatus, turbidityCondition);
+    if (turbidityValid) {
+      postReading(temperatureValid, temp, turbidityRaw, turbidityVoltage, turbidityNTU, temperatureStatus, turbidityCondition);
+    } else {
+      Serial.println("Dashboard POST skipped: waiting for turbidity sensor");
     }
 
     Serial.println("-------------------------");
