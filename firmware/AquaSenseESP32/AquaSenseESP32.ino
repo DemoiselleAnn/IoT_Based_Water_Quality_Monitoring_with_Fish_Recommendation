@@ -154,24 +154,16 @@ void updateStatusLEDs(const String& temperatureStatus, const String& turbidityCo
   // Temperature LEDs are controlled only by the water temperature.
   if (temperatureStatus == "HOT") {
     digitalWrite(RED_LED, HIGH);
-    setBuzzerPattern(3, HOT_BEEP);
     Serial.println("Temperature LED: RED - hot water");
-    Serial.println("Buzzer interval: 1 second (200 ms beep)");
   } else if (temperatureStatus == "MODERATE") {
     digitalWrite(YELLOW_LED, HIGH);
-    setBuzzerPattern(2, 0);
     Serial.println("Temperature LED: YELLOW - moderate temperature");
-    Serial.println("Buzzer: OFF (moderate temperature)");
   } else if (temperatureStatus == "COLD") {
     digitalWrite(BLUE_LED, HIGH);
-    setBuzzerPattern(0, COLD_BEEP);
     Serial.println("Temperature LED: BLUE - cold water");
-    Serial.println("Buzzer interval: 3 seconds (200 ms beep)");
   } else {
     digitalWrite(GREEN_LED, HIGH);
-    setBuzzerPattern(1, 0);
     Serial.println("Temperature LED: GREEN - normal temperature");
-    Serial.println("Buzzer: OFF (normal temperature)");
   }
 
   // Turbidity LEDs are controlled only by the water clarity classification.
@@ -184,6 +176,19 @@ void updateStatusLEDs(const String& temperatureStatus, const String& turbidityCo
   } else if (turbidityCondition == "Clear") {
     digitalWrite(TURBIDITY_GREEN_LED, HIGH);
     Serial.println("Turbidity LED: GREEN - clean/clear water");
+  }
+
+  // The buzzer is reserved for cold, hot, or dirty/high-alert conditions.
+  // Dirty water has priority over temperature so the alert is unmistakable.
+  if (turbidityCondition == "High" || temperatureStatus == "HOT") {
+    setBuzzerPattern(3, HOT_BEEP);
+    Serial.println("Buzzer interval: 1 second (hot or dirty alert)");
+  } else if (temperatureStatus == "COLD") {
+    setBuzzerPattern(0, COLD_BEEP);
+    Serial.println("Buzzer interval: 3 seconds (cold alert)");
+  } else {
+    setBuzzerPattern(1, 0);
+    Serial.println("Buzzer: OFF (normal/moderate temperature or clean/cloudy water)");
   }
 }
 
@@ -292,7 +297,7 @@ void setup() {
 
   Serial.println("========================");
   Serial.println("FISH FARM WATER MONITOR");
-  Serial.println("Buzzer control: BLUE=3s RED=1s GREEN/YELLOW=OFF");
+  Serial.println("Buzzer control: COLD=3s HOT/DIRTY=1s NORMAL/MODERATE=OFF");
   Serial.println("========================");
 
   connectWiFi();
